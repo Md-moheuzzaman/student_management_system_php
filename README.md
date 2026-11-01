@@ -32,7 +32,7 @@ accuracy and security.
 
 ## Technology Stack
 
--   **Frontend:** HTML5, CSS3, JavaScript, Bootstrap
+-   **Frontend:** HTML5, CSS3, JavaScript, Bootstrap5
 -   **Backend:** PHP 7.4+
 -   **Database:** MySQL
 -   **Server:** Apache (XAMPP / WAMP / LAMP)
@@ -62,6 +62,7 @@ accuracy and security.
 
 **Md. Moheuzzaman**\
 **Batch:** PWAD-73/USSL/-M/73/01
+
 
 ------------------------------------------------------------------------
 
