@@ -1,46 +1,5 @@
 <?php
-require __DIR__ . '/../includes/functions.php';
-
-if (!empty($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'admin') {
-		header('Location: dashboard.php');
-		exit;
-}
-
-$error = '';
-$username = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$username = trim($_POST['username'] ?? '');
-		$password = $_POST['password'] ?? '';
-
-		if (!csrf_valid($_POST['csrf'] ?? '')) {
-				$error = 'Your sign-in session expired. Please try again.';
-		} elseif ($username === '' || $password === '') {
-				$error = 'Enter your username and password.';
-		} else {
-				try {
-						$db = db_connection();
-						$stmt = $db->prepare('SELECT id, username, password, role FROM users WHERE username = ? LIMIT 1');
-						$stmt->bind_param('s', $username);
-						$stmt->execute();
-						$user = $stmt->get_result()->fetch_assoc();
-						$stmt->close();
-
-						if ($user && $user['role'] === 'admin' && password_verify($password, $user['password'])) {
-								session_regenerate_id(true);
-								$_SESSION['user_id'] = (int) $user['id'];
-								$_SESSION['username'] = $user['username'];
-								$_SESSION['role'] = $user['role'];
-								header('Location: dashboard.php');
-								exit;
-						}
-
-						$error = 'Incorrect username or password, or this account does not have administrator access.';
-				} catch (mysqli_sql_exception $exception) {
-						$error = 'The database is not available. Start MySQL and import student_management_system.sql.';
-				}
-		}
-}
+include __DIR__ . '/../includes/dbconfig.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

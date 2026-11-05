@@ -1,15 +1,5 @@
 <?php
-require __DIR__ . '/includes/functions.php';
-
-$signedIn = !empty($_SESSION['user_id']);
-$portalHref = $signedIn ? 'admin/dashboard.php' : 'admin/index.php';
-$portalText = $signedIn ? 'Open dashboard' : 'Admin sign in';
-$modules = [
-		['number' => '01', 'title' => 'Student records', 'text' => 'Profiles, class placements and contact details, kept together.'],
-		['number' => '02', 'title' => 'Attendance', 'text' => 'Daily records that make patterns easier to see.'],
-		['number' => '03', 'title' => 'Academic progress', 'text' => 'Courses, subjects and marks organized by class.'],
-		['number' => '04', 'title' => 'Fee tracking', 'text' => 'Payment status and receipts in one clear view.'],
-];
+include __DIR__ . '/../includes/dbconfig.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

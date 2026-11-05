@@ -1,41 +1,5 @@
 <?php
-require __DIR__ . '/../includes/functions.php';
-
-if (empty($_SESSION['user_id'])) {
-		header('Location: index.php');
-		exit;
-}
-
-if (($_SESSION['role'] ?? '') !== 'admin') {
-		http_response_code(403);
-		exit('Administrator access is required.');
-}
-
-$pageTitle = 'Overview';
-$activePage = 'dashboard';
-$pageSubtitle = 'A clear view of today and what needs attention.';
-$stats = ['students' => 0, 'teachers' => 0, 'classes' => 0, 'courses' => 0, 'collected' => 0, 'pending' => 0, 'attendance' => 0, 'attendance_total' => 0];
-$recentStudents = [];
-$pendingFees = [];
-$databaseError = false;
-
-try {
-		$db = db_connection();
-		$stats['students'] = (int) db_scalar($db, 'SELECT COUNT(*) FROM students');
-		$stats['teachers'] = (int) db_scalar($db, 'SELECT COUNT(*) FROM teachers');
-		$stats['classes'] = (int) db_scalar($db, 'SELECT COUNT(*) FROM classes');
-		$stats['courses'] = (int) db_scalar($db, 'SELECT COUNT(*) FROM courses');
-		$stats['collected'] = (float) db_scalar($db, "SELECT COALESCE(SUM(amount), 0) FROM fees WHERE status = 'Paid'");
-		$stats['pending'] = (int) db_scalar($db, "SELECT COUNT(*) FROM fees WHERE status <> 'Paid'");
-		$stats['attendance_total'] = (int) db_scalar($db, 'SELECT COUNT(*) FROM attendance WHERE date = CURDATE()');
-		$stats['attendance'] = (int) db_scalar($db, "SELECT COUNT(*) FROM attendance WHERE date = CURDATE() AND status = 'P'");
-		$recentStudents = db_rows($db, 'SELECT s.name, s.email, c.class_name, c.section, s.created_at FROM students s LEFT JOIN classes c ON c.id = s.class_id ORDER BY s.id DESC LIMIT 5');
-		$pendingFees = db_rows($db, "SELECT s.name, f.amount, f.status FROM fees f JOIN students s ON s.id = f.student_id WHERE f.status <> 'Paid' ORDER BY f.id DESC LIMIT 5");
-} catch (mysqli_sql_exception $exception) {
-		$databaseError = true;
-}
-
-$attendancePercent = $stats['attendance_total'] > 0 ? (int) round($stats['attendance'] / $stats['attendance_total'] * 100) : 0;
+include __DIR__ . '/../includes/dbconfig.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
