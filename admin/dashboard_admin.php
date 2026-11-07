@@ -21,9 +21,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 
 <!-- admin dashboard css -->
-<link rel="stylesheet" href="../assets/css/admin_dashboard.css">
+<!-- <link rel="stylesheet" href="../assets/css/admin_dashboard.css"> -->
 
-<?php  //include '../includes/admin_dashboard_css.php'; ?>
+<?php  include '../includes/admin_dashboard_css.php'; ?>
 </head>
 <body>
 <div class="app">

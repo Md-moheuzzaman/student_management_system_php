@@ -329,7 +329,7 @@ if(isset($_POST['login'])){
         </form>
 
         <div class="login-footer">
-            © 2026 Student Management System. All Rights Reserved.
+            &copy; Ustudent. 2026. All Rights Reserved.
         </div>
 
     </div>

@@ -1,5 +1,8 @@
   <aside class="side">
-    <div class="logo"><span class="mark" aria-hidden="true"></span>Ustudent</div>
+    <div class="logo">
+    <img src="../assets/images/logo.jpg" alt="logo">    
+    <span>Ustudent</span>
+    </div>
     <nav aria-label="Main">
       <a class="on" href="dashboard_admin.php"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
       <div class="group">People</div>
