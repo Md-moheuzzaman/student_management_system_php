@@ -6,6 +6,6 @@
       <div class="me">
         <div><b>Admin User</b><small>Administrator</small></div>
         <span class="av">AU</span>
-        <button class="logout" type="button"> <a href="../admin/index.php">Log out</a></button>
+        <button class="logout" type="button"> <a href="logout.php">Logout</a></button>
       </div>
     </header>

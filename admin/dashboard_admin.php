@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once '../database/dbconfig.php';
+include '../database/dbconfig.php';
 
 // Admin Authentication
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -15,7 +15,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard | Student Management System</title>
+<title>Admin Dashboard | Ustudent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     <main class="content">
       <div class="head">
         <div>
-          <h1>Dashboard</h1>
+          <h1>Admin Dashboard</h1>
           <p>Here is what is happening at your institute today.</p>
         </div>
         <button class="btn" type="button">+ Add student</button>
