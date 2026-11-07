@@ -1,19 +1,17 @@
-<aside class="admin-sidebar">
-  <?php $activePage = $activePage ?? 'dashboard'; ?>
-  <a class="sidebar-brand" href="../index.php">
-    <span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 11.5 16 5l12 6.5L16 18 4 11.5Z"/><path d="M9 14.5v7c4.5 3.2 9.5 3.2 14 0v-7M28 12v8"/></svg></span>
-    <span>Ustudent<span class="brand-subtitle">STUDENT SERVICES</span></span>
-  </a>
-  <div class="sidebar-label">Workspace</div>
-  <nav class="sidebar-nav" aria-label="Dashboard navigation">
-    <a class="nav-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="dashboard.php#overview"<?= $activePage === 'dashboard' ? ' aria-current="page"' : '' ?>><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="11" width="7" height="10" rx="1"/><rect x="3" y="14" width="8" height="7" rx="1"/></svg><span>Overview</span></a>
-    <a class="nav-link <?= $activePage === 'students' ? 'active' : '' ?>" href="students.php"<?= $activePage === 'students' ? ' aria-current="page"' : '' ?>><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.8M18 14a5 5 0 0 1 3 4.5V20"/></svg><span>Students</span></a>
-    <a class="nav-link <?= $activePage === 'attendance' ? 'active' : '' ?>" href="attendance.php"<?= $activePage === 'attendance' ? ' aria-current="page"' : '' ?>><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18m-13 5 2 2 5-5"/></svg><span>Attendance</span></a>
-    <a class="nav-link <?= $activePage === 'academics' ? 'active' : '' ?>" href="academics.php"<?= $activePage === 'academics' ? ' aria-current="page"' : '' ?>><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 8 9-5 9 5-9 5-9-5Z"/><path d="M7 11v5c3 2.5 7 2.5 10 0v-5m4-3v7"/></svg><span>Academics</span></a>
-    <a class="nav-link <?= $activePage === 'fees' ? 'active' : '' ?>" href="fees.php"<?= $activePage === 'fees' ? ' aria-current="page"' : '' ?>><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18m-13 5h4"/></svg><span>Fees</span></a>
-  </nav>
-  <div class="sidebar-note">
-    <span class="note-mark" aria-hidden="true"></span>
-    <div><strong>Good systems,</strong><br>better school days.</div>
-  </div>
-</aside>
+  <aside class="side">
+    <div class="logo"><span class="mark" aria-hidden="true"></span>Ustudent</div>
+    <nav aria-label="Main">
+      <a class="on" href="admin-dashboard.php"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
+      <div class="group">People</div>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.500 6-3v-5"/></svg>Students</a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Teachers</a>
+      <div class="group">Academics</div>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg>Courses</a>
+      <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Attendance</a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/></svg>Marks</a>
+      <div class="group">Finance</div>
+      <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Fees</a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Reports</a>
+    </nav>
+    <div class="foot">Ustudent</div>
+  </aside>

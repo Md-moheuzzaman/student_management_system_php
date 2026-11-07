@@ -1,4 +1,9 @@
-<footer class="admin-footer">
-  <span>&copy; <?= date('Y') ?> Ustudent Services</span>
-  <span>Student records, thoughtfully organized.</span>
+<footer class="site-footer">
+    
+  <span>&copy; Ustudent</span>
+  <nav aria-label="Footer">
+    <a href="#">Help</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </nav>
 </footer>
