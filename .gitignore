@@ -2,6 +2,7 @@
 .env
 dbconfig.php
 
+
 # Logs and uploaded files
 *.log
 uploads/
