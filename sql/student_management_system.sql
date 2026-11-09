@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 08, 2026 at 07:46 PM
+-- Generation Time: Nov 09, 2026 at 08:36 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -61,6 +61,17 @@ CREATE TABLE `courses` (
   `course_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `courses`
+--
+
+INSERT INTO `courses` (`id`, `course_name`, `description`) VALUES
+(1, 'ENG101', 'English Language I'),
+(2, 'BNG103', 'Bangla Language III'),
+(12, 'PHP101', 'PHP Language'),
+(13, 'PHY101', 'Physics I'),
+(14, 'BHG101', 'Bangladesh Global Studies & History');
 
 -- --------------------------------------------------------
 
@@ -281,7 +292,7 @@ ALTER TABLE `classes`
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `fees`

@@ -26,19 +26,39 @@ if(isset($_POST['login'])){
                 header("Location:dashboard_admin.php");
                 exit;
 
+            }else if ($user['role'] == 'student') {
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['name'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role'];
+    $_SESSION['url'] = 'dashboard_student.php';
+    header("Location: dashboard_student.php");
+    exit();
+
+}else if ($user['role'] == 'teacher') {
+    $_SESSION['id'] = $user['id'];
+                $_SESSION['name'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role'];
+    $_SESSION['url'] = 'dashboard_teacher.php';
+    header("Location: dashboard_teacher.php");
+    exit();
+}
+    
             }else {
                 $error = "Access Denied!";
             }
-
-        } else {
+            }else{
             $error = "Wrong Password!";
         }
 
-    } else {
+
+     }else{
         $error = "Email Not Found!";
     }
 
-    }
+    
+
 ?>
 
 
