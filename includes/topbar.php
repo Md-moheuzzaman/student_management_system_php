@@ -4,8 +4,8 @@
         <input type="search" placeholder="Search students, teachers, classes" aria-label="Search">
       </div>
       <div class="me">
-        <div><b>Admin User</b><small>Administrator</small></div>
-        <span class="av">AU</span>
+        <div><b><?php echo $_SESSION['name']; ?></b><small><?php echo $_SESSION['email']; ?></small></div>
+        <span class="av"><?php echo strtoupper(substr($_SESSION['name'], 0,2)) ?></span>
         <button class="logout" type="button"> <a href="logout.php">Logout</a></button>
       </div>
     </header>
