@@ -5,7 +5,7 @@ if (isset($_POST['add_course'])) {
     $description = ($_POST['description']);
 
     $conn->query("INSERT INTO courses (course_name, description) VALUES ('$name', '$description')");
-    header("Location: courses.php");
+    header("Location: courses.php?msg=added");
     exit;
 }
 ?>

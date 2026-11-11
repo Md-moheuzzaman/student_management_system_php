@@ -10,7 +10,7 @@ if (isset($_POST['delete_course'])) {
     }
 
     $conn->query("DELETE FROM courses WHERE id=$id");
-    header("Location: courses.php");
+    header("Location: courses.php?msg=deleted");
     exit;
 }
 ?>

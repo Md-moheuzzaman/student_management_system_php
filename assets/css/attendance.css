@@ -1,0 +1,20 @@
+/* Attendance page */
+
+/* Present / Absent / Late choice buttons (radio inputs are hidden by Bootstrap's .btn-check) */
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{min-width:78px;text-align:center;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;user-select:none}
+.opt:hover{background:var(--paper)}
+.btn-check:checked + .opt.present{background:var(--green-soft);border-color:var(--green);color:#126b35}
+.btn-check:checked + .opt.absent{background:var(--red-soft);border-color:var(--red);color:#8f2a1c}
+.btn-check:checked + .opt.late{background:var(--gold-soft);border-color:var(--gold);color:#7a6000}
+.btn-check:focus-visible + .opt{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Roll number column */
+.roll{width:60px;color:var(--muted);font-weight:600}
+
+/* Legend in the card footer */
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.legend .p{background:var(--green)}
+.legend .a{background:var(--red)}
+.legend .l{background:var(--gold)}

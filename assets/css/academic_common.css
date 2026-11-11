@@ -1,0 +1,47 @@
+/* Shared styles for attendance, marks and fees pages.
+   Load order: bootstrap.min.css -> admin_dashboard.css -> academic_common.css -> page css */
+
+/* ---- Bootstrap vs admin_dashboard.css fixes ---- */
+h1,h2,h3{font-weight:700}
+a:hover{color:inherit}
+
+/* Make Bootstrap's .btn use the Ustudent colours */
+.btn{--bs-btn-color:#fff;--bs-btn-hover-color:#fff;--bs-btn-active-color:#fff;
+  --bs-btn-bg:var(--navy);--bs-btn-hover-bg:var(--navy-deep);--bs-btn-active-bg:var(--navy-deep);
+  --bs-btn-hover-border-color:transparent;--bs-btn-active-border-color:transparent}
+.btn.ghost{--bs-btn-color:var(--navy);--bs-btn-hover-color:var(--navy);--bs-btn-active-color:var(--navy);
+  --bs-btn-bg:var(--white);--bs-btn-hover-bg:var(--paper);--bs-btn-active-bg:var(--paper);
+  background:var(--white);color:var(--navy);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--paper)}
+.btn.danger{--bs-btn-bg:var(--red);--bs-btn-hover-bg:#9f3224;--bs-btn-active-bg:#9f3224;background:var(--red)}
+.btn.danger:hover{background:#9f3224}
+
+/* ---- Forms ---- */
+.form-label{font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
+.form-control,.form-select,.input-group-text{border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit;color:var(--ink)}
+.input-group-text{background:var(--paper);color:var(--muted)}
+.form-select{padding-right:2.25rem} /* keeps room for the dropdown arrow */
+.form-control:focus,.form-select:focus{border-color:var(--navy);box-shadow:none}
+
+/* ---- Cards, toolbars, footers ---- */
+.card > .card-body{padding:18px 20px}
+.tool-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.tool-bar .search{flex:1;min-width:220px}
+.tool-bar .form-select{width:auto}
+.card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:14px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+.table-wrap{overflow-x:auto}
+.table-wrap table{min-width:680px}
+
+/* ---- Small buttons used in table rows ---- */
+.row-actions{display:flex;gap:8px;justify-content:flex-end}
+.small-btn{border:1.5px solid var(--line);background:var(--white);border-radius:8px;padding:6px 12px;font:600 14px var(--body);cursor:pointer;color:var(--navy)}
+.small-btn:hover{background:var(--paper)}
+.small-btn.danger{color:var(--red)}
+.small-btn.danger:hover{background:var(--red-soft);border-color:var(--red)}
+
+/* ---- Modal + pagination ---- */
+.modal-title{font:700 18px var(--head);color:var(--navy-deep)}
+.modal-content{border-radius:12px;border:0}
+.modal-header,.modal-footer{border-color:var(--line)}
+.pagination{--bs-pagination-color:var(--navy);--bs-pagination-hover-color:var(--navy-deep);--bs-pagination-focus-color:var(--navy-deep);
+  --bs-pagination-active-bg:var(--navy);--bs-pagination-active-border-color:var(--navy);--bs-pagination-focus-box-shadow:none;margin:0}

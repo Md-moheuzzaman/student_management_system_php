@@ -1,0 +1,15 @@
+/* Marks page */
+
+.roll{width:60px;color:var(--muted);font-weight:600}
+.mark-input{width:100px;text-align:right;padding:6px 10px}
+
+/* Grade badges */
+.grade{display:inline-block;min-width:40px;text-align:center;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700}
+.grade.ap,.grade.a{background:var(--green-soft);color:#126b35}
+.grade.b{background:var(--blue-soft);color:var(--navy)}
+.grade.c,.grade.d{background:var(--gold-soft);color:#7a6000}
+.grade.f{background:var(--red-soft);color:#8f2a1c}
+
+/* Grading scale in the card footer */
+.scale{display:flex;gap:14px;flex-wrap:wrap}
+.scale span b{color:var(--ink)}

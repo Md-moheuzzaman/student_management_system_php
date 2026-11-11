@@ -1,0 +1,31 @@
+/* Courses page */
+
+.alert{padding:12px 20px;border-radius:8px;margin-bottom:18px;font-weight:600}
+.alert.ok{background:var(--green-soft);color:#126b35}
+.alert.bad{background:var(--red-soft);color:#8f2a1c}
+.row-actions{display:flex;gap:8px;justify-content:flex-end}
+.row-actions form{margin:0}
+.small-btn{border:1.5px solid var(--line);background:var(--white);border-radius:8px;padding:6px 12px;font:600 14px var(--body);cursor:pointer;color:var(--navy)}
+.small-btn:hover{background:var(--paper)}
+.small-btn.danger{color:var(--red)}
+.small-btn.danger:hover{background:var(--red-soft);border-color:var(--red)}
+.empty{padding:40px 20px;text-align:center;color:var(--muted)}
+
+/* Modal */
+
+.overlay{position:fixed;inset:0;background:rgba(20,38,74,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.overlay.open{display:flex}
+.modal{background:var(--white);border-radius:12px;width:100%;max-width:500px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:18px}
+.close{border:0;background:none;font-size:26px;line-height:1;cursor:pointer;color:var(--muted);text-decoration:none}
+.modal-body{padding:20px;display:grid;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:14px}
+.field input,.field textarea{padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;font:inherit}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--navy)}
+.field textarea{resize:vertical;min-height:90px}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid var(--line)}
+.btn.ghost{background:var(--white);color:var(--navy);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--paper)}
+

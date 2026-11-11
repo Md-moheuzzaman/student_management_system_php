@@ -1,0 +1,22 @@
+/* Reports page */
+
+.head-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Fee status breakdown (Bootstrap progress bars in Ustudent colours) */
+.breakdown{padding:20px;display:grid;gap:20px}
+.line-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;font-weight:600;font-size:15px}
+.line-head span:last-child{color:var(--muted);font-weight:400}
+.progress{height:10px;background:var(--paper);border-radius:99px}
+.progress-bar{border-radius:99px}
+.progress-bar.paid{background:var(--green)}
+.progress-bar.partial{background:var(--gold)}
+.progress-bar.unpaid{background:var(--red)}
+.breakdown-note{padding:14px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+
+/* Top students ranking */
+.rank{width:30px;height:30px;border-radius:50%;background:var(--blue-soft);color:var(--navy);display:grid;place-items:center;font:700 13px var(--head);flex:none}
+.rank.first{background:var(--gold-soft);color:#7a6000}
+
+/* Small helpers */
+.strong{font-weight:600}
+.muted{color:var(--muted)}
