@@ -32,7 +32,7 @@ $id = $_GET['id'] ?? '';
 $course_name = '';
 $description = '';
 
-// Get existing course data for Edit
+//existing course data for Edit
 if ($action === 'edit' && $id !== '') {
 
     $sql = "SELECT * FROM courses WHERE id='$id'";
