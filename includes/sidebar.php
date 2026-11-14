@@ -2,6 +2,10 @@
     <div class="logo">
     <img src="../assets/images/logo.jpg" alt="logo">    
     <span>Ustudent</span>
+    <!-- <a class="navbar-brand brand-mark" href="#home" aria-label="Ustudent home">
+                <span class="brand-icon"><i class="bi bi-mortarboard-fill" aria-hidden="true"></i></span>
+                <span>u<span class="brand-accent">student</span></span>
+            </a> -->
     </div>
     <nav aria-label="Main">
       <a class="on" href="dashboard_admin.php"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>

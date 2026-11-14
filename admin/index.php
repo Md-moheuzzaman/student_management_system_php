@@ -300,6 +300,7 @@ if(isset($_POST['login'])){
                         name="email"
                         class="form-control"
                         placeholder="Enter your email"
+                        value="admin@gmail.com"
                         required>
                 </div>
             </div>
@@ -314,6 +315,7 @@ if(isset($_POST['login'])){
                         id="password"
                         class="form-control"
                         placeholder="Enter your password"
+                        value="admin"
                         required>
 
                     <span class="input-group-text" onclick="togglePassword()">

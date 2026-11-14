@@ -27,7 +27,7 @@
                 <a class="nav-link" href="#features">Features</a>
                 <a class="nav-link" href="#about">About</a>
                 <a class="btn btn-brand nav-login" href="admin/index.php"> Login <i class= aria-hidden="true"></i></a>
-                <a class="btn btn-brand nav-login" href="admin/index.php"> Register <i class= aria-hidden="true"></i></a>
+                <a class="btn btn-brand nav-login" href="admin/registration.php"> Register <i class= aria-hidden="true"></i></a>
             </div>
 
             <!-- Native details menu keeps mobile navigation interactive without JavaScript. -->
