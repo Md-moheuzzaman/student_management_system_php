@@ -6,6 +6,6 @@
       <div class="me">
         <div><b><?php echo $_SESSION['name']; ?></b><small><?php echo $_SESSION['email']; ?></small></div>
         <span class="av"><?php echo strtoupper(substr($_SESSION['name'], 0,2)) ?></span>
-        <button class="logout" type="button"> <a href="logout.php">Logout</a></button>
+        <button class="logout" type="button"> <a href="../login.php">Logout</a></button>
       </div>
     </header>

@@ -6,7 +6,7 @@ include '../database/dbconfig.php';
 
 // Admin Authentication
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: index.php");
+    header("Location: ../login.php");
     exit;
 }
 
@@ -94,12 +94,12 @@ if ($action === 'edit' && $id !== '') {
             <div class="head">
 
                 <div>
-                    <h1>Courses</h1>
-                    <p>Add, edit and delete the courses here</p>
+                    <h1>Subjects</h1>
+                    <p>Add, edit and delete the Subjects here</p>
                 </div>
 
                 <a href="courses.php?action=add" class="btn">
-                    + Add course
+                    + Add subject
                 </a>
 
             </div>
@@ -109,19 +109,19 @@ if ($action === 'edit' && $id !== '') {
             <?php if ($msg == 'added') { ?>
 
                 <div class="alert ok">
-                    Course added successfully.
+                    Subject added successfully.
                 </div>
 
             <?php } elseif ($msg == 'updated') { ?>
 
                 <div class="alert ok">
-                    Course updated successfully.
+                    Subject updated successfully.
                 </div>
 
             <?php } elseif ($msg == 'deleted')  {?>
 
                 <div class="alert ok">
-                    Course deleted successfully.
+                    Subject deleted successfully.
                 </div>
 
             <?php } ?>
@@ -131,7 +131,7 @@ if ($action === 'edit' && $id !== '') {
 
             <section class="card">
 
-                <h2>All courses</h2>
+                <h2>All Subjects</h2>
 
                 <table>
 
@@ -139,7 +139,7 @@ if ($action === 'edit' && $id !== '') {
 
                         <tr>
                             <th>#</th>
-                            <th>Course name</th>
+                            <th>Subject name</th>
                             <th>Description</th>
                             <th class="num">Actions</th>
                         </tr>
@@ -245,7 +245,7 @@ if ($action === 'edit' && $id !== '') {
 
                 <div class="field">
 
-                    <label for="course_name">Course name</label>
+                    <label for="course_name">Subject name</label>
 
                     <input type="text"
                            name="course_name"

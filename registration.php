@@ -1,6 +1,6 @@
 <?php
 
-include '../database/dbconfig.php';
+include 'database/dbconfig.php';
 
 
 
@@ -216,7 +216,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 <p>
                     Access your academic information, manage your profile, track your progress and stay connected with your institution.
                 </p>
-
+<!-- 
                 <div class="mt-3">
                     <i class="bi bi-shield-check me-2"></i>
                     Secure Registration
@@ -225,7 +225,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 <div class="mt-2">
                     <i class="bi bi-person-check me-2"></i>
                     Easy Account Access
-                </div>
+                </div> -->
 
             </div>
 
@@ -332,7 +332,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 
                 <div class="text-center mt-4">
                     Already have an account?
-                    <a href="index.php" class="login-link">Login</a>
+                    <a href="login.php" class="login-link">Login</a>
                 </div>
 
             </div>
