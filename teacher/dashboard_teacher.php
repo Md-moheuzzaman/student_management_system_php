@@ -61,7 +61,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher') {
           <h2>Quick actions</h2>
           <div class="actions">
             
-            <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Take attendance</a>
+            <a href="attendance.php"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Take attendance</a>
             
           </div>
         </section>

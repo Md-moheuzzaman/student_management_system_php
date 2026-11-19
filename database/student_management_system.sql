@@ -397,3 +397,42 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+-- OPTIONAL: sample rows so you can test Marks, Fees, Reports, Attendance and the student Marks page.
+-- Run this ONLY on a test copy of your database (phpMyAdmin > SQL tab).
+-- It uses your existing users: teacher@gmail.com (user id 3) and student@gmail.com (user id 4).
+-- Your SQL dump has no classes, subjects, student/teacher profile rows or assignments, which is why
+-- the new pages would otherwise look empty.
+
+INSERT INTO classes (class_name, section, course_id) VALUES ('Class 9', 'A', 1);
+SET @class_id = LAST_INSERT_ID();
+
+INSERT INTO subjects (subject_name, course_id) VALUES ('English Language I', 1);
+SET @subject_id = LAST_INSERT_ID();
+INSERT INTO subjects (subject_name, course_id) VALUES ('Bangla Language III', 2);
+SET @subject_id = LAST_INSERT_ID();
+INSERT INTO subjects (subject_name, course_id) VALUES ('Physics I', 13);
+SET @subject_id = LAST_INSERT_ID();
+INSERT INTO subjects (subject_name, course_id) VALUES ('Bangladesh Global Studies & History', 14);
+SET @subject_id = LAST_INSERT_ID();
+
+INSERT INTO teachers (user_id, name, email, phone, qualification)
+VALUES (3, 'Demo Teacher', 'teacher@gmail.com', '01700000001', 'M.A. English');
+SET @teacher_id = LAST_INSERT_ID();
+
+INSERT INTO students (user_id, name, email, phone, dob, class_id, address)
+VALUES (4, 'Demo Student', 'student@gmail.com', '01700000002', '2011-05-10', @class_id, 'Dhaka');
+SET @student_id = LAST_INSERT_ID();
+
+-- this is what lets the teacher take attendance for this class + subject
+INSERT INTO teacher_subjects (teacher_id, subject_id, class_id) VALUES (@teacher_id, @subject_id, @class_id);
+
+INSERT INTO marks (student_id, subject_id, exam_type, marks, exam_date) VALUES (@student_id, @subject_id, 'Midterm', 78.50, CURDATE());
+INSERT INTO fees (student_id, amount, payment_date, status, receipt_no) VALUES (@student_id, 1500.00, CURDATE(), 'Paid', 'R-00001');
+
+-- Recommended (stops duplicate rows if two people save at the same time). Safe to run once:
+-- ALTER TABLE attendance ADD UNIQUE KEY uq_attendance (student_id, subject_id, date);
+-- ALTER TABLE marks      ADD UNIQUE KEY uq_marks (student_id, subject_id, exam_type);
