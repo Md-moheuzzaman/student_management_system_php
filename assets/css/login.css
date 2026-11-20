@@ -1,0 +1,189 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f3f6fc;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 15px 50px rgba(30, 50, 90, 0.12);
+        }
+
+        /* Left section */
+
+        .login-left {
+            width: 50%;
+            padding: 65px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            color: #2563eb;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 45px;
+        }
+
+        .brand i {
+            margin-right: 10px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 750;
+            color: #172554;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #7b8496;
+            margin-bottom: 35px;
+            font-size: 14px;
+        }
+
+        .form-label {
+            color: #344054;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-control {
+            height: 52px;
+            border: 1px solid #e0e5ef;
+            border-radius: 9px;
+            padding-left: 15px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+        }
+
+        .input-group .form-control {
+            border-right: 0;
+        }
+
+        .input-group-text {
+            background: #fff;
+            border: 1px solid #e0e5ef;
+            border-left: 0;
+            cursor: pointer;
+            border-radius: 0 9px 9px 0;
+        }
+
+        .forgot-link {
+            color: #2563eb;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-btn {
+            height: 52px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            transition: .3s;
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .login-footer {
+            margin-top: 35px;
+            text-align: center;
+            color: #98a2b3;
+            font-size: 12px;
+        }
+
+        /* Right section */
+
+        .login-right {
+            width: 50%;
+            background: linear-gradient(145deg, #1e40af, #2563eb, #60a5fa);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 45px;
+            position: relative;
+        }
+
+        .login-right img {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 30px;
+        }
+
+        .login-right h2 {
+            font-size: 29px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .login-right p {
+            color: #e0eaff;
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 350px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #fff0f0;
+            padding: 10px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 768px) {
+            .login-wrapper {
+                max-width: 480px;
+            }
+
+            .login-left {
+                width: 100%;
+                padding: 45px 30px;
+            }
+
+            .login-right {
+                display: none;
+            }
+
+            .login-title {
+                font-size: 27px;
+            }
+        }
+    

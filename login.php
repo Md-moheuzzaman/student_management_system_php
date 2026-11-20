@@ -2,63 +2,55 @@
 <?php
 session_start();
 require_once 'database/dbconfig.php';
-?>
 
+$error = null;
+$emailValue = '';
 
-<?php
-if(isset($_POST['login'])){
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $emailValue = trim((string)($_POST['email'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+    $statement = $conn->prepare("SELECT id, username, email, password, role FROM users WHERE email = ? LIMIT 1");
 
-    $sql = "SELECT * FROM users WHERE email = '$email'";
+    if (!$statement) {
+        $error = 'Unable to process your login right now. Please try again.';
+    } else {
+        $statement->bind_param("s", $emailValue);
+        if (!$statement->execute()) {
+            $error = 'Unable to process your login right now. Please try again.';
+        } else {
+            $user = $statement->get_result()->fetch_assoc();
+            if (!$user) {
+                $error = 'Email Not Found!';
+            } elseif (sha1($password) !== $user['password']) {
+                $error = 'Wrong Password!';
+            } else {
+                $redirects = [
+                    'admin' => 'admin/dashboard_admin.php',
+                    'student' => 'student/dashboard_student.php',
+                    'teacher' => 'teacher/dashboard_teacher.php',
+                ];
 
-    $result = mysqli_query($conn, $sql);
-    if(mysqli_num_rows($result)== 1){
-    $user = mysqli_fetch_assoc($result);
+                if (!isset($redirects[$user['role']])) {
+                    $error = 'Access Denied!';
+                } else {
+                    $_SESSION['id'] = $user['id'];
+                    $_SESSION['name'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role'];
 
-    if(sha1($password) === $user['password']){
-            if($user['role'] === "admin"){
-                 $_SESSION['id'] = $user['id'];
-                $_SESSION['name'] = $user['username'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
+                    if ($user['role'] === 'student') {
+                        $_SESSION['url'] = 'dashboard_student.php';
+                    } elseif ($user['role'] === 'teacher') {
+                        $_SESSION['url'] = 'dashboard_teacher.php';
+                    }
 
-                header("Location:admin/dashboard_admin.php");
-                exit;
-
-            }else if ($user['role'] == 'student') {
-                $_SESSION['id'] = $user['id'];
-                $_SESSION['name'] = $user['username'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
-    $_SESSION['url'] = 'dashboard_student.php';
-    header("Location: student/dashboard_student.php");
-    exit();
-
-}else if ($user['role'] == 'teacher') {
-    $_SESSION['id'] = $user['id'];
-                $_SESSION['name'] = $user['username'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
-    $_SESSION['url'] = 'dashboard_teacher.php';
-    header("Location: teacher/dashboard_teacher.php");
-    exit();
-}
-    
-            }else {
-                $error = "Access Denied!";
+                    header("Location: " . $redirects[$user['role']]);
+                    exit;
+                }
             }
-            }else{
-            $error = "Wrong Password!";
         }
-
-
-     }else{
-        $error = "Email Not Found!";
     }
-
-    
-
+}
 ?>
 
 
@@ -76,196 +68,9 @@ if(isset($_POST['login'])){
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/login.css">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            min-height: 100vh;
-            background: #f3f6fc;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 25px;
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 1050px;
-            min-height: 620px;
-            background: #fff;
-            border-radius: 22px;
-            overflow: hidden;
-            display: flex;
-            box-shadow: 0 15px 50px rgba(30, 50, 90, 0.12);
-        }
-
-        /* Left section */
-
-        .login-left {
-            width: 50%;
-            padding: 65px 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .brand {
-            color: #2563eb;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 45px;
-        }
-
-        .brand i {
-            margin-right: 10px;
-        }
-
-        .login-title {
-            font-size: 32px;
-            font-weight: 750;
-            color: #172554;
-            margin-bottom: 10px;
-        }
-
-        .login-subtitle {
-            color: #7b8496;
-            margin-bottom: 35px;
-            font-size: 14px;
-        }
-
-        .form-label {
-            color: #344054;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-control {
-            height: 52px;
-            border: 1px solid #e0e5ef;
-            border-radius: 9px;
-            padding-left: 15px;
-            font-size: 14px;
-        }
-
-        .form-control:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
-        }
-
-        .input-group .form-control {
-            border-right: 0;
-        }
-
-        .input-group-text {
-            background: #fff;
-            border: 1px solid #e0e5ef;
-            border-left: 0;
-            cursor: pointer;
-            border-radius: 0 9px 9px 0;
-        }
-
-        .forgot-link {
-            color: #2563eb;
-            font-size: 13px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .login-btn {
-            height: 52px;
-            border: none;
-            border-radius: 9px;
-            background: #2563eb;
-            color: white;
-            font-weight: 600;
-            width: 100%;
-            transition: .3s;
-        }
-
-        .login-btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-        }
-
-        .login-footer {
-            margin-top: 35px;
-            text-align: center;
-            color: #98a2b3;
-            font-size: 12px;
-        }
-
-        /* Right section */
-
-        .login-right {
-            width: 50%;
-            background: linear-gradient(145deg, #1e40af, #2563eb, #60a5fa);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 45px;
-            position: relative;
-        }
-
-        .login-right img {
-            width: 100%;
-            max-width: 360px;
-            height: auto;
-            object-fit: contain;
-            margin-bottom: 30px;
-        }
-
-        .login-right h2 {
-            font-size: 29px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .login-right p {
-            color: #e0eaff;
-            font-size: 14px;
-            line-height: 1.8;
-            max-width: 350px;
-        }
-
-        .error-message {
-            color: #dc3545;
-            background: #fff0f0;
-            padding: 10px 12px;
-            border-radius: 7px;
-            font-size: 13px;
-            margin-bottom: 18px;
-        }
-
-        /* Responsive */
-
-        @media(max-width: 768px) {
-            .login-wrapper {
-                max-width: 480px;
-            }
-
-            .login-left {
-                width: 100%;
-                padding: 45px 30px;
-            }
-
-            .login-right {
-                display: none;
-            }
-
-            .login-title {
-                font-size: 27px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -299,7 +104,7 @@ if(isset($_POST['login'])){
                         type="email"
                         name="email"
                         class="form-control"
-                        placeholder="Enter your email"
+                        placeholder="Enter your email" 
                         value="admin@gmail.com"
                         required>
                 </div>
@@ -330,19 +135,9 @@ if(isset($_POST['login'])){
                 </a>
             </div>
 
-            <?php
-            //if (isset($error)) {
-                //echo '<div class="error-message">' . htmlspecialchars($error) . '</div>';
-           // }
-            ?>
-
-
-            <?php 
-                if (isset($error)) {
-                    echo $error;
-                        }
-                
-                ?>
+            <?php if ($error !== null): ?>
+                <div class="error-message" role="alert"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php endif; ?>
 
             <button type="submit" name="login" class="login-btn">
                 Sign In <i class="fa-solid fa-arrow-right ms-2"></i>

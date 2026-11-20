@@ -119,7 +119,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
             <a href="student.php"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add student</a>
             <a href="teacher.php"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add teacher</a>
             <!-- <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Take attendance</a> -->
-            <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Record fee</a>
+            <a href="fees.php"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Record fee</a>
           </div>
         </section>
       </div>

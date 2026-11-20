@@ -147,8 +147,8 @@ $flash = $msgs[$_GET['msg'] ?? ''] ?? null;
       <?php if ($flash): ?><div class="alert alert-<?php echo $flash[0]; ?>"><?php echo h($flash[1]); ?></div><?php endif; ?>
 
       <section class="stats" aria-label="Summary">
-        <div class="stat"><span class="ico g"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><div><b>$<?php echo number_format((float)$sum['collected'], 2); ?></b><span>Collected</span></div></div>
-        <div class="stat"><span class="ico r"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>$<?php echo number_format((float)$sum['pending'], 2); ?></b><span>Unpaid amount</span></div></div>
+        <div class="stat"><span class="ico g"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><div><b>৳<?php echo number_format((float)$sum['collected'], 2); ?></b><span>Collected</span></div></div>
+        <div class="stat"><span class="ico r"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>৳<?php echo number_format((float)$sum['pending'], 2); ?></b><span>Unpaid amount</span></div></div>
         <div class="stat"><span class="ico b"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span><div><b><?php echo (int)$sum['paid_n']; ?></b><span>Paid</span></div></div>
         <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span><div><b><?php echo (int)$sum['partial_n'] + (int)$sum['unpaid_n']; ?></b><span>Partial / unpaid</span></div></div>
       </section>
@@ -216,7 +216,7 @@ $flash = $msgs[$_GET['msg'] ?? ''] ?? null;
                 <td class="receipt"><?php echo h($f['receipt_no'] ?: '—'); ?></td>
                 <td><div class="who"><span class="dot"><?php echo h(strtoupper(substr($f['name'], 0, 2))); ?></span>
                   <div><b><?php echo h($f['name']); ?></b><small><?php echo h($f['email']); ?></small></div></div></td>
-                <td class="amount">$<?php echo number_format((float)$f['amount'], 2); ?></td>
+                <td class="amount">৳<?php echo number_format((float)$f['amount'], 2); ?></td>
                 <td><?php echo $f['payment_date'] ? h(date('d M Y', strtotime($f['payment_date']))) : '—'; ?></td>
                 <td><span class="pill <?php echo strtolower($f['status']); ?>"><?php echo h($f['status']); ?></span></td>
                 <td>

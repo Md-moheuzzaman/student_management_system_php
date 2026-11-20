@@ -89,26 +89,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
 
       <!-- Chart + quick actions -->
        
-      <div class="row2">
-        <section class="card">
-          <h2>Attendance this week <a href="#">View report</a></h2>
-          <div class="chart" role="img" aria-label="Attendance by day: Monday 94 percent, Tuesday 91, Wednesday 88, Thursday 93, Friday 79, Saturday 85">
-            <div class="col"><div class="bar" style="height:94%"><em>94%</em></div><span>Mon</span></div>
-            <div class="col"><div class="bar" style="height:91%"><em>91%</em></div><span>Tue</span></div>
-            <div class="col"><div class="bar" style="height:88%"><em>88%</em></div><span>Wed</span></div>
-            <div class="col"><div class="bar" style="height:93%"><em>93%</em></div><span>Thu</span></div>
-            <div class="col"><div class="bar low" style="height:79%"><em>79%</em></div><span>Fri</span></div>
-            <div class="col"><div class="bar" style="height:85%"><em>85%</em></div><span>Sat</span></div>
-          </div>
-        </section>
       
-
-      <!-- Students + fees -->
-      <div class="row2">
-        
-
-        
-      </div>
 
       <!-- Notices -->
       <section class="card">
