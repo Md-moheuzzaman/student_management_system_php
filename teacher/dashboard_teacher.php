@@ -49,9 +49,41 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher') {
 
       <!-- Stat cards -->
       <section class="stats" aria-label="Summary">
-        <div class="stat"><span class="ico b"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.500 6-3v-5"/></svg></span><div><b>8,248</b><span>Students</span></div></div>
-        <div class="stat"><span class="ico g"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><div><b>645</b><span>Teachers</span></div></div>
-        <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg></span><div><b>412</b><span>Courses</span></div></div>
+        <div class="stat"><span class="ico b"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.500 6-3v-5"/></svg></span><div><span>Students</span></div>
+        <?php 
+           
+          $students = $conn->query("SELECT COUNT(*) AS total FROM students");
+          $total = $students->fetch_assoc();
+
+          echo $total['total'];
+
+          ?>
+
+      </div>
+        <div class="stat"><span class="ico g"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><div><span>Teachers</span></div>
+          
+          <?php 
+           
+          $teachers = $conn->query("SELECT COUNT(*) AS total FROM teachers");
+          $total = $teachers->fetch_assoc();
+
+          echo $total['total'];
+
+          ?>
+      
+      </div>
+        <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg></span><div><span>Courses</span></div>
+
+        <?php 
+           
+          $courses = $conn->query("SELECT COUNT(*) AS total FROM courses");
+          $total = $courses->fetch_assoc();
+
+          echo $total['total'];
+
+          ?>
+      
+      </div>
         
       </section>
 

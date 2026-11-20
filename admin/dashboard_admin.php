@@ -64,15 +64,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
           
           <?php 
            
-          $students = $conn->query("SELECT COUNT(*) AS total FROM students");
-          $total = $students->fetch_assoc();
+          $teachers = $conn->query("SELECT COUNT(*) AS total FROM teachers");
+          $total = $teachers->fetch_assoc();
 
           echo $total['total'];
 
           ?>
       
       </div>
-        <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg></span><div><span>Subjects</span></div>
+        <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg></span><div><span>Courses</span></div>
 
         <?php 
            
@@ -84,7 +84,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
           ?>
       
       </div>
-        <div class="stat"><span class="ico r"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><div><b>24,860</b><span>Fees collected</span></div></div>
+        <div class="stat"><span class="ico r"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><div><span>Fees collected</span></div>
+      
+        <?php 
+           
+          $fees = $conn->query("SELECT COUNT(*) AS total FROM fees");
+          $total = $fees->fetch_assoc();
+
+          echo $total['total'];
+
+          ?>
+      
+      
+      </div>
       </section>
 
       <!-- Chart + quick actions -->

@@ -44,10 +44,16 @@ $marks = [];
 $att = ['total' => 0, 'ok' => 0];
 if ($me) {
     $marks = rows($conn,
-        "SELECT m.exam_type, m.marks, m.exam_date,
-                COALESCE(NULLIF(sub.description, ''), sub.course_name) AS subject_name
-           FROM marks m JOIN courses sub ON sub.id = m.subject_id
-          WHERE m.student_id = ? AND (? = '' OR m.exam_type = ?)
+        "SELECT m.exam_type, m.marks, m.exam_date, sub.subject_name
+           FROM marks m
+           JOIN subjects sub ON sub.id = m.subject_id
+          WHERE m.id = (
+                SELECT MAX(m2.id) FROM marks m2
+                 WHERE m2.student_id = m.student_id
+                   AND m2.subject_id = m.subject_id
+                   AND m2.exam_type = m.exam_type
+          )
+            AND m.student_id = ? AND (? = '' OR m.exam_type = ?)
           ORDER BY m.exam_date DESC, sub.subject_name",
         "iss", [(int)$me['id'], $examType, $examType]);
 

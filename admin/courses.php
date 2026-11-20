@@ -19,11 +19,28 @@ include 'courses_edit.php';
 // Delete Course
 include 'courses_delete.php';
 
+// Fill missing subject records for existing courses that already have classes.
+$subjectSync = $conn->query(
+    "INSERT INTO subjects (subject_name, course_id)
+     SELECT CASE
+                WHEN c.description IS NULL OR TRIM(c.description) = '' OR CHAR_LENGTH(c.description) > 100
+                    THEN c.course_name
+                ELSE TRIM(c.description)
+            END,
+            c.id
+       FROM courses c
+      WHERE EXISTS (SELECT 1 FROM classes cl WHERE cl.course_id = c.id)
+        AND NOT EXISTS (SELECT 1 FROM subjects s WHERE s.course_id = c.id)"
+);
+
 // Get all courses
 $result = $conn->query("SELECT * FROM courses ORDER BY id ASC");
 
 // Message
 $msg = $_GET['msg'] ?? '';
+if (!$subjectSync) {
+    $msg = 'error';
+}
 
 // Add / Edit Form Control
 $action = $_GET['action'] ?? '';
@@ -94,12 +111,12 @@ if ($action === 'edit' && $id !== '') {
             <div class="head">
 
                 <div>
-                    <h1>Subjects</h1>
-                    <p>Add, edit and delete the Subjects here</p>
+                    <h1>Courses</h1>
+                    <p>Add, edit and delete the Courses here</p>
                 </div>
 
                 <a href="courses.php?action=add" class="btn">
-                    + Add subject
+                    + Add course
                 </a>
 
             </div>
@@ -109,19 +126,31 @@ if ($action === 'edit' && $id !== '') {
             <?php if ($msg == 'added') { ?>
 
                 <div class="alert ok">
-                    Subject added successfully.
+                    Course and its subject added successfully. Create a class for this course before assigning it to a teacher.
                 </div>
 
             <?php } elseif ($msg == 'updated') { ?>
 
                 <div class="alert ok">
-                    Subject updated successfully.
+                    Course and its default subject updated successfully.
                 </div>
 
             <?php } elseif ($msg == 'deleted')  {?>
 
                 <div class="alert ok">
-                    Subject deleted successfully.
+                    Course and unused subjects deleted successfully.
+                </div>
+
+            <?php } elseif ($msg == 'in_use') { ?>
+
+                <div class="alert bad">
+                    This course cannot be deleted while classes or academic records use it.
+                </div>
+
+            <?php } elseif ($msg == 'error') { ?>
+
+                <div class="alert bad">
+                    The course could not be saved. Check the course details and database records.
                 </div>
 
             <?php } ?>
@@ -131,7 +160,7 @@ if ($action === 'edit' && $id !== '') {
 
             <section class="card">
 
-                <h2>All Subjects</h2>
+                <h2>All Courses</h2>
 
                 <table>
 
@@ -139,7 +168,7 @@ if ($action === 'edit' && $id !== '') {
 
                         <tr>
                             <th>#</th>
-                            <th>Subject name</th>
+                            <th>Subject code</th>
                             <th>Description</th>
                             <th class="num">Actions</th>
                         </tr>
@@ -245,7 +274,7 @@ if ($action === 'edit' && $id !== '') {
 
                 <div class="field">
 
-                    <label for="course_name">Subject name</label>
+                    <label for="course_name">Subject code</label>
 
                     <input type="text"
                            name="course_name"

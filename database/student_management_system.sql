@@ -411,13 +411,10 @@ INSERT INTO classes (class_name, section, course_id) VALUES ('Class 9', 'A', 1);
 SET @class_id = LAST_INSERT_ID();
 
 INSERT INTO subjects (subject_name, course_id) VALUES ('English Language I', 1);
-SET @subject_id = LAST_INSERT_ID();
+SET @english_subject_id = LAST_INSERT_ID();
 INSERT INTO subjects (subject_name, course_id) VALUES ('Bangla Language III', 2);
-SET @subject_id = LAST_INSERT_ID();
 INSERT INTO subjects (subject_name, course_id) VALUES ('Physics I', 13);
-SET @subject_id = LAST_INSERT_ID();
 INSERT INTO subjects (subject_name, course_id) VALUES ('Bangladesh Global Studies & History', 14);
-SET @subject_id = LAST_INSERT_ID();
 
 INSERT INTO teachers (user_id, name, email, phone, qualification)
 VALUES (3, 'Demo Teacher', 'teacher@gmail.com', '01700000001', 'M.A. English');
@@ -428,9 +425,9 @@ VALUES (4, 'Demo Student', 'student@gmail.com', '01700000002', '2011-05-10', @cl
 SET @student_id = LAST_INSERT_ID();
 
 -- this is what lets the teacher take attendance for this class + subject
-INSERT INTO teacher_subjects (teacher_id, subject_id, class_id) VALUES (@teacher_id, @subject_id, @class_id);
+INSERT INTO teacher_subjects (teacher_id, subject_id, class_id) VALUES (@teacher_id, @english_subject_id, @class_id);
 
-INSERT INTO marks (student_id, subject_id, exam_type, marks, exam_date) VALUES (@student_id, @subject_id, 'Midterm', 78.50, CURDATE());
+INSERT INTO marks (student_id, subject_id, exam_type, marks, exam_date) VALUES (@student_id, @english_subject_id, 'Midterm', 78.50, CURDATE());
 INSERT INTO fees (student_id, amount, payment_date, status, receipt_no) VALUES (@student_id, 1500.00, CURDATE(), 'Paid', 'R-00001');
 
 -- Recommended (stops duplicate rows if two people save at the same time). Safe to run once:

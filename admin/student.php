@@ -258,7 +258,7 @@ if ($action === 'edit' && $id > 0) {
                             <th>#</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Class</th>
+                            <th>Courses</th>
                             <th>Phone</th>
                             <th class="num">Actions</th>
                         </tr>

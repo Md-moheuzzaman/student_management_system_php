@@ -13,8 +13,63 @@ $msg = $_GET['msg'] ?? '';
 $action = $_GET['action'] ?? '';
 $id = (int)($_GET['id'] ?? 0);
 
+$assignmentResult = $conn->query(
+    "SELECT c.id AS class_id, c.class_name, c.section, co.course_name,
+            s.id AS subject_id, s.subject_name
+       FROM classes c
+       JOIN courses co ON co.id = c.course_id
+       JOIN subjects s ON s.course_id = c.course_id
+      ORDER BY c.class_name, c.section, co.course_name, s.subject_name"
+);
+if (!$assignmentResult) {
+    header("Location: teacher.php?msg=error");
+    exit;
+}
+
+$availableAssignments = [];
+foreach ($assignmentResult->fetch_all(MYSQLI_ASSOC) as $assignment) {
+    $key = (int)$assignment['class_id'] . ':' . (int)$assignment['subject_id'];
+    $availableAssignments[$key] = $assignment;
+}
+
+function selectedTeacherAssignments($values, $availableAssignments) {
+    if (!is_array($values) || !$values) return false;
+
+    $selected = [];
+    foreach ($values as $value) {
+        if (!is_string($value) || !isset($availableAssignments[$value])) return false;
+        $selected[$value] = $availableAssignments[$value];
+    }
+
+    return array_values($selected);
+}
+
+function saveTeacherAssignments($conn, $teacherId, $assignments) {
+    $delete = $conn->prepare("DELETE FROM teacher_subjects WHERE teacher_id = ?");
+    $insert = $conn->prepare("INSERT INTO teacher_subjects (teacher_id, subject_id, class_id) VALUES (?, ?, ?)");
+    if (!$delete || !$insert) return false;
+
+    $delete->bind_param("i", $teacherId);
+    if (!$delete->execute()) return false;
+
+    foreach ($assignments as $assignment) {
+        $subjectId = (int)$assignment['subject_id'];
+        $classId = (int)$assignment['class_id'];
+        $insert->bind_param("iii", $teacherId, $subjectId, $classId);
+        if (!$insert->execute()) return false;
+    }
+
+    return true;
+}
+
 // Add Teacher
 if (isset($_POST['add_teacher'])) {
+    $assignments = selectedTeacherAssignments($_POST['assignments'] ?? [], $availableAssignments);
+    if ($assignments === false) {
+        header("Location: teacher.php?msg=invalid_assignments");
+        exit;
+    }
+
     $username = $conn->real_escape_string($_POST['username']);
     $name = $conn->real_escape_string($_POST['name']);
     $email = $conn->real_escape_string($_POST['email']);
@@ -41,7 +96,7 @@ if (isset($_POST['add_teacher'])) {
         $sql = "INSERT INTO teachers (user_id, name, email, phone, qualification)
                 VALUES ($user_id, '$name', '$email', '$phone', '$qualification')";
 
-        if ($conn->query($sql)) {
+        if ($conn->query($sql) && saveTeacherAssignments($conn, $conn->insert_id, $assignments)) {
             $conn->commit();
             header("Location: teacher.php?msg=added");
             exit;
@@ -55,6 +110,12 @@ if (isset($_POST['add_teacher'])) {
 
 // Update Teacher
 if (isset($_POST['update_teacher'])) {
+    $assignments = selectedTeacherAssignments($_POST['assignments'] ?? [], $availableAssignments);
+    if ($assignments === false) {
+        header("Location: teacher.php?msg=invalid_assignments");
+        exit;
+    }
+
     $teacher_id = (int)$_POST['id'];
     $username = $conn->real_escape_string($_POST['username']);
     $name = $conn->real_escape_string($_POST['name']);
@@ -101,7 +162,8 @@ if (isset($_POST['update_teacher'])) {
     $teacherSql = "UPDATE teachers SET name='$name', email='$email', phone='$phone',
                    qualification='$qualification' WHERE id=$teacher_id";
 
-    if ($conn->query($userSql) && $conn->query($teacherSql)) {
+    if ($conn->query($userSql) && $conn->query($teacherSql) &&
+        saveTeacherAssignments($conn, $teacher_id, $assignments)) {
         $conn->commit();
         header("Location: teacher.php?msg=updated");
         exit;
@@ -131,7 +193,8 @@ if (isset($_POST['delete_teacher'])) {
     $user_id = (int)$teacherRow['user_id'];
     $conn->begin_transaction();
 
-    if ($conn->query("DELETE FROM teachers WHERE id=$teacher_id") &&
+    if ($conn->query("DELETE FROM teacher_subjects WHERE teacher_id=$teacher_id") &&
+        $conn->query("DELETE FROM teachers WHERE id=$teacher_id") &&
         $conn->query("DELETE FROM users WHERE id=$user_id AND role='teacher'")) {
         $conn->commit();
         header("Location: teacher.php?msg=deleted");
@@ -144,7 +207,19 @@ if (isset($_POST['delete_teacher'])) {
 }
 
 // Get all teachers
-$result = $conn->query("SELECT * FROM teachers ORDER BY id ASC");
+$result = $conn->query(
+    "SELECT t.*,
+            (SELECT GROUP_CONCAT(DISTINCT CONCAT(c.class_name, ' ', c.section, ' - ',
+                                                 co.course_name, ' / ', s.subject_name)
+                                 ORDER BY c.class_name, c.section, s.subject_name SEPARATOR ', ')
+               FROM teacher_subjects ts
+               JOIN classes c ON c.id = ts.class_id
+               JOIN courses co ON co.id = c.course_id
+               JOIN subjects s ON s.id = ts.subject_id
+              WHERE ts.teacher_id = t.id) AS assigned_courses
+       FROM teachers t
+      ORDER BY t.id ASC"
+);
 if (!$result) {
     $msg = 'error';
 }
@@ -154,6 +229,7 @@ $username = '';
 $email = '';
 $phone = '';
 $qualification = '';
+$selectedAssignmentKeys = [];
 
 // Existing teacher data for Edit
 if ($action === 'edit' && $id > 0) {
@@ -174,6 +250,16 @@ if ($action === 'edit' && $id > 0) {
         $email = $row['email'];
         $phone = $row['phone'];
         $qualification = $row['qualification'];
+
+        $assignedResult = $conn->query("SELECT class_id, subject_id FROM teacher_subjects WHERE teacher_id=$id");
+        if (!$assignedResult) {
+            header('Location: teacher.php?msg=error');
+            exit;
+        }
+        while ($assignment = $assignedResult->fetch_assoc()) {
+            $key = (int)$assignment['class_id'] . ':' . (int)$assignment['subject_id'];
+            if (isset($availableAssignments[$key])) $selectedAssignmentKeys[] = $key;
+        }
     } else {
         header('Location: teacher.php?msg=not_found');
         exit;
@@ -224,6 +310,8 @@ if ($action === 'edit' && $id > 0) {
                 <div class="alert ok">Teacher deleted successfully.</div>
             <?php } elseif ($msg === 'email_exists') { ?>
                 <div class="alert bad">That email is already in use.</div>
+            <?php } elseif ($msg === 'invalid_assignments') { ?>
+                <div class="alert bad">Select one or more valid class and subject assignments.</div>
             <?php } elseif ($msg === 'not_found') { ?>
                 <div class="alert bad">The teacher could not be found.</div>
             <?php } elseif ($msg === 'error') { ?>
@@ -239,6 +327,7 @@ if ($action === 'edit' && $id > 0) {
                             <th>#</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Assigned courses</th>
                             <th>Phone</th>
                             <th>Qualification</th>
                             <th class="num">Actions</th>
@@ -252,6 +341,7 @@ if ($action === 'edit' && $id > 0) {
                                 <td><?php echo $row['id']; ?></td>
                                 <td><b><?php echo htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?></b></td>
                                 <td><?php echo htmlspecialchars($row['email'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($row['assigned_courses'] ?? 'Not assigned', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td class="phone"><?php echo htmlspecialchars($row['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?php echo htmlspecialchars($row['qualification'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td>
@@ -267,7 +357,7 @@ if ($action === 'edit' && $id > 0) {
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td colspan="6" class="empty">No teachers found.</td>
+                            <td colspan="7" class="empty">No teachers found.</td>
                         </tr>
                     <?php } ?>
                     </tbody>
@@ -319,6 +409,21 @@ if ($action === 'edit' && $id > 0) {
                 <div class="field">
                     <label for="qualification">Qualification</label>
                     <input type="text" name="qualification" id="qualification" maxlength="150" value="<?php echo htmlspecialchars($qualification ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                </div>
+
+                <div class="field">
+                    <label for="assignments">Assigned classes, courses and subjects</label>
+                    <?php if (!$availableAssignments) { ?>
+                        <span class="muted">No class and subject combinations are available. Add classes and subjects first.</span>
+                    <?php } ?>
+                    <select name="assignments[]" id="assignments" multiple size="6" required>
+                        <?php foreach ($availableAssignments as $key => $assignment) { ?>
+                            <option value="<?php echo htmlspecialchars($key, ENT_QUOTES, 'UTF-8'); ?>" <?php echo in_array($key, $selectedAssignmentKeys, true) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($assignment['class_name'] . ' ' . $assignment['section'] . ' - ' . $assignment['course_name'] . ' / ' . $assignment['subject_name'], ENT_QUOTES, 'UTF-8'); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                    <span class="muted">Select one or more assignments. A course appears here after a class and subject are created for it.</span>
                 </div>
             </div>
 

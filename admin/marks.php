@@ -45,43 +45,63 @@ $filterQuery = http_build_query([
     'exam_type' => $examType, 'exam_date' => $examDate,
 ]);
 
+$selectedClass = $classId > 0 ? rows($conn,
+    "SELECT course_id FROM classes WHERE id = ?",
+    "i", [$classId])[0] ?? null : null;
+$selectionValid = $selectedClass && $subjectId > 0 && !empty(rows($conn,
+    "SELECT id FROM subjects WHERE id = ? AND course_id = ? LIMIT 1",
+    "ii", [$subjectId, (int)$selectedClass['course_id']]));
+
 /* ---------- save marks (form POST) ---------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_marks'])) {
     $saved = 0;
     $bad = 0;
 
-    if ($classId > 0 && $subjectId > 0) {
+    if ($selectionValid) {
         // Only accept students who really are in the selected class
         $classStudents = array_map('intval', array_column(
             rows($conn, "SELECT id FROM students WHERE class_id = ?", "i", [$classId]), 'id'));
 
-        $find = $conn->prepare("SELECT id FROM marks WHERE student_id = ? AND subject_id = ? AND exam_type = ?");
+        $find = $conn->prepare("SELECT id FROM marks WHERE student_id = ? AND subject_id = ? AND exam_type = ? ORDER BY id DESC LIMIT 1");
         $upd  = $conn->prepare("UPDATE marks SET marks = ?, exam_date = ? WHERE id = ?");
         $ins  = $conn->prepare("INSERT INTO marks (student_id, subject_id, exam_type, marks, exam_date) VALUES (?, ?, ?, ?, ?)");
+        if (!$find || !$upd || !$ins) {
+            throw new RuntimeException("Could not prepare mark saving queries.");
+        }
 
         $conn->begin_transaction();
-        foreach (($_POST['marks'] ?? []) as $sid => $val) {
-            $sid = (int)$sid;
-            $val = trim((string)$val);
-            if ($val === '' || !in_array($sid, $classStudents, true)) continue;   // empty box = skip
-            if (!is_numeric($val) || $val < 0 || $val > 100) { $bad++; continue; }
-            $val = (float)$val;
+        try {
+            $markSubjectId = $subjectId;
 
-            $find->bind_param("iis", $sid, $subjectId, $examType);
-            $find->execute();
-            $old = $find->get_result()->fetch_assoc();
+            foreach (($_POST['marks'] ?? []) as $sid => $val) {
+                $sid = (int)$sid;
+                $val = trim((string)$val);
+                if ($val === '' || !in_array($sid, $classStudents, true)) continue;   // empty box = skip
+                if (!is_numeric($val) || $val < 0 || $val > 100) { $bad++; continue; }
+                $val = (float)$val;
 
-            if ($old) {                       // already has marks for this exam -> update
-                $oldId = (int)$old['id'];
-                $upd->bind_param("dsi", $val, $examDate, $oldId);
-                $upd->execute();
-            } else {                          // first time -> insert
-                $ins->bind_param("iisds", $sid, $subjectId, $examType, $val, $examDate);
-                $ins->execute();
+                $find->bind_param("iis", $sid, $markSubjectId, $examType);
+                if (!$find->execute()) throw new RuntimeException("Could not check existing marks.");
+                $old = $find->get_result()->fetch_assoc();
+
+                if ($old) {                       // already has marks for this exam -> update
+                    $oldId = (int)$old['id'];
+                    $upd->bind_param("dsi", $val, $examDate, $oldId);
+                    if (!$upd->execute()) throw new RuntimeException("Could not update marks.");
+                } else {                          // first time -> insert
+                    $ins->bind_param("iisds", $sid, $markSubjectId, $examType, $val, $examDate);
+                    if (!$ins->execute()) throw new RuntimeException("Could not save marks.");
+                }
+                $saved++;
             }
-            $saved++;
+            $conn->commit();
+        } catch (Throwable $error) {
+            $conn->rollback();
+            throw $error;
         }
-        $conn->commit();
+    } else {
+        header("Location: marks.php?" . $filterQuery . "&msg=invalid_selection");
+        exit;
     }
     header("Location: marks.php?" . $filterQuery . "&msg=saved&n=$saved&bad=$bad");
     exit;
@@ -89,17 +109,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_marks'])) {
 
 /* ---------- data for the page ---------- */
 $classes  = rows($conn, "SELECT id, class_name, section, course_id FROM classes ORDER BY class_name, section");
-$subjects = rows($conn, "SELECT id, COALESCE(NULLIF(description, ''), course_name) AS subject_name FROM courses ORDER BY subject_name");
+$subjects = $selectedClass
+    ? rows($conn, "SELECT id, subject_name FROM subjects WHERE course_id = ? ORDER BY subject_name", "i", [(int)$selectedClass['course_id']])
+    : rows($conn, "SELECT id, subject_name FROM subjects ORDER BY subject_name");
 
 $students = [];
-if ($classId > 0 && $subjectId > 0) {
+$markSubjectId = $selectionValid ? $subjectId : 0;
+if ($selectionValid) {
     $students = rows($conn,
         "SELECT s.id, s.name, s.email, m.marks
            FROM students s
-           LEFT JOIN marks m ON m.student_id = s.id AND m.subject_id = ? AND m.exam_type = ?
+           LEFT JOIN marks m ON m.id = (
+               SELECT MAX(m2.id) FROM marks m2
+                WHERE m2.student_id = s.id AND m2.subject_id = ? AND m2.exam_type = ?
+           )
           WHERE s.class_id = ?
           ORDER BY s.name",
-        "isi", [$subjectId, $examType, $classId]);
+        "isi", [$markSubjectId, $examType, $classId]);
 }
 
 // numbers for the summary cards
@@ -146,6 +172,11 @@ $high = count($entered) ? max($entered) : 0;
             <b><?php echo (int)$_GET['bad']; ?> row(s) skipped</b> because the mark was not a number from 0 to 100.
           <?php endif; ?>
         </div>
+      <?php endif; ?>
+      <?php if (($_GET['msg'] ?? '') === 'invalid_selection'): ?>
+        <div class="alert alert-warning">The selected subject must belong to the selected class course.</div>
+      <?php elseif ($classId > 0 && $subjectId > 0 && !$selectionValid): ?>
+        <div class="alert alert-warning">Choose the subject that belongs to this class course, then load the students again.</div>
       <?php endif; ?>
 
       <!-- Step 1: filters -->
@@ -198,8 +229,11 @@ $high = count($entered) ? max($entered) : 0;
 
       <?php if (!$classes || !$subjects): ?>
         <div class="alert alert-warning">
-          You need at least one <b>class</b> and one <b>subject</b> before you can enter marks.
-          Add them from the Classes and Subjects pages.
+          <?php if (!$classes): ?>
+            You need at least one <b>class</b> before you can enter marks. Add one from the Classes page.
+          <?php else: ?>
+            No subjects are available for this class course. Add subject records linked to the course in the database.
+          <?php endif; ?>
         </div>
       <?php endif; ?>
 

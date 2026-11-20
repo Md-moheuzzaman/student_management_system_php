@@ -12,8 +12,8 @@
       <a href="student.php" title="Students"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.500 6-3v-5"/></svg><span class="nav-label">Students</span></a>
       <a href="teacher.php" title="Teachers"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="nav-label">Teachers</span></a>
       <div class="group">Academics</div>
-      <a href="courses.php" title="Subjects"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg><span class="nav-label">Subjects</span></a>
-      <a href="classes.php" title="Classes"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg><span class="nav-label">Classes</span></a>
+      <a href="courses.php" title="Subjects"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg><span class="nav-label">Courses</span></a>
+      <a href="classes.php" title="Classes"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg><span class="nav-label">Departments</span></a>
       <a href="marks.php" title="Marks"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/></svg><span class="nav-label">Marks</span></a>
       <div class="group">Finance</div>
       <a href="fees.php" title="Fees"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span class="nav-label">Fees</span></a>
