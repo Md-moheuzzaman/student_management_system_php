@@ -22,21 +22,21 @@ if (isset($_POST['add_class'])) {
     $courseResult = $conn->query("SELECT id FROM courses WHERE id=$course_id");
 
     if (!$courseResult) {
-        header("Location: classes.php?msg=error");
+        header("Location: dept.php?msg=error");
         exit;
     }
 
     if ($courseResult->num_rows === 0) {
-        header("Location: classes.php?msg=invalid_course");
+        header("Location: dept.php?msg=invalid_course");
         exit;
     }
 
     if ($conn->query("INSERT INTO classes (class_name, section, course_id) VALUES ('$class_name', '$section', $course_id)")) {
-        header("Location: classes.php?msg=added");
+        header("Location: dept.php?msg=added");
         exit;
     }
 
-    header("Location: classes.php?msg=error");
+    header("Location: dept.php?msg=error");
     exit;
 }
 
@@ -51,26 +51,26 @@ if (isset($_POST['update_class'])) {
     $courseResult = $conn->query("SELECT id FROM courses WHERE id=$course_id");
 
     if (!$classResult || !$courseResult) {
-        header("Location: classes.php?msg=error");
+        header("Location: dept.php?msg=error");
         exit;
     }
 
     if ($classResult->num_rows === 0) {
-        header("Location: classes.php?msg=not_found");
+        header("Location: dept.php?msg=not_found");
         exit;
     }
 
     if ($courseResult->num_rows === 0) {
-        header("Location: classes.php?msg=invalid_course");
+        header("Location: dept.php?msg=invalid_course");
         exit;
     }
 
     if ($conn->query("UPDATE classes SET class_name='$class_name', section='$section', course_id=$course_id WHERE id=$class_id")) {
-        header("Location: classes.php?msg=updated");
+        header("Location: dept.php?msg=updated");
         exit;
     }
 
-    header("Location: classes.php?msg=error");
+    header("Location: dept.php?msg=error");
     exit;
 }
 
@@ -80,21 +80,21 @@ if (isset($_POST['delete_class'])) {
     $classResult = $conn->query("SELECT id FROM classes WHERE id=$class_id");
 
     if (!$classResult) {
-        header("Location: classes.php?msg=error");
+        header("Location: dept.php?msg=error");
         exit;
     }
 
     if ($classResult->num_rows === 0) {
-        header("Location: classes.php?msg=not_found");
+        header("Location: dept.php?msg=not_found");
         exit;
     }
 
     if ($conn->query("DELETE FROM classes WHERE id=$class_id")) {
-        header("Location: classes.php?msg=deleted");
+        header("Location: dept.php?msg=deleted");
         exit;
     }
 
-    header("Location: classes.php?msg=in_use");
+    header("Location: dept.php?msg=in_use");
     exit;
 }
 
@@ -118,7 +118,7 @@ if ($action === 'edit' && $id > 0) {
     $editResult = $conn->query("SELECT * FROM classes WHERE id=$id");
 
     if (!$editResult) {
-        header('Location: classes.php?msg=error');
+        header('Location: dept.php?msg=error');
         exit;
     }
 
@@ -128,7 +128,7 @@ if ($action === 'edit' && $id > 0) {
         $section = $row['section'];
         $course_id = $row['course_id'];
     } else {
-        header('Location: classes.php?msg=not_found');
+        header('Location: dept.php?msg=not_found');
         exit;
     }
 }
@@ -140,7 +140,7 @@ if ($action === 'edit' && $id > 0) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard | Classes</title>
+<title>Admin Dashboard | Departments</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -161,19 +161,19 @@ if ($action === 'edit' && $id > 0) {
         <main class="content">
             <div class="head">
                 <div>
-                    <h1>Classes</h1>
-                    <p>Add, edit and delete the classes here</p>
+                    <h1>Departments</h1>
+                    <p>Add, edit and delete here</p>
                 </div>
 
-                <a href="classes.php?action=add" class="btn">+ Add class</a>
+                <a href="dept.php?action=add" class="btn">+ Add Department</a>
             </div>
 
             <?php if ($msg === 'added') { ?>
-                <div class="alert ok">Class added successfully.</div>
+                <div class="alert ok">Department added successfully.</div>
             <?php } elseif ($msg === 'updated') { ?>
-                <div class="alert ok">Class updated successfully.</div>
+                <div class="alert ok">Department updated successfully.</div>
             <?php } elseif ($msg === 'deleted') { ?>
-                <div class="alert ok">Class deleted successfully.</div>
+                <div class="alert ok"> Department deleted successfully.</div>
             <?php } elseif ($msg === 'in_use') { ?>
                 <div class="alert bad">This class cannot be deleted while students or teacher assignments use it.</div>
             <?php } elseif ($msg === 'invalid_course') { ?>
@@ -185,13 +185,13 @@ if ($action === 'edit' && $id > 0) {
             <?php } ?>
 
             <section class="card">
-                <h2>All classes</h2>
+                <h2>All Departments</h2>
 
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Class name</th>
+                            <th>Dept name</th>
                             <th>Section</th>
                             <th>Course</th>
                             <th class="num">Actions</th>
@@ -208,7 +208,7 @@ if ($action === 'edit' && $id > 0) {
                                 <td><?php echo htmlspecialchars($row['course_name'], ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td>
                                     <div class="row-actions">
-                                        <a class="small-btn" href="classes.php?action=edit&id=<?php echo $row['id']; ?>">Edit</a>
+                                        <a class="small-btn" href="dept.php?action=edit&id=<?php echo $row['id']; ?>">Edit</a>
                                         <form method="post" onsubmit="return confirm('Delete this class?');">
                                             <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                             <button type="submit" name="delete_class" class="small-btn danger">Delete</button>
@@ -219,7 +219,7 @@ if ($action === 'edit' && $id > 0) {
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td colspan="5" class="empty">No classes found.</td>
+                            <td colspan="5" class="empty">No Dept found.</td>
                         </tr>
                     <?php } ?>
                     </tbody>
@@ -233,8 +233,8 @@ if ($action === 'edit' && $id > 0) {
 <div class="overlay open">
     <div class="modal">
         <div class="modal-head">
-            <h2><?php echo ($action === 'add') ? 'Add class' : 'Edit class'; ?></h2>
-            <a href="classes.php" class="close">&times;</a>
+            <h2><?php echo ($action === 'add') ? 'Add Dept' : 'Edit class'; ?></h2>
+            <a href="dept.php" class="close">&times;</a>
         </div>
 
         <form method="post">
@@ -244,7 +244,7 @@ if ($action === 'edit' && $id > 0) {
 
             <div class="modal-body">
                 <div class="field">
-                    <label for="class_name">Class name</label>
+                    <label for="class_name">Dept name</label>
                     <input type="text" name="class_name" id="class_name" maxlength="50" value="<?php echo htmlspecialchars($class_name, ENT_QUOTES, 'UTF-8'); ?>" required>
                 </div>
 
@@ -269,9 +269,9 @@ if ($action === 'edit' && $id > 0) {
             </div>
 
             <div class="modal-foot">
-                <a href="classes.php" class="btn ghost">Cancel</a>
+                <a href="dept.php" class="btn ghost">Cancel</a>
                 <button type="submit" class="btn" name="<?php echo ($action === 'add') ? 'add_class' : 'update_class'; ?>">
-                    <?php echo ($action === 'add') ? 'Save class' : 'Update class'; ?>
+                    <?php echo ($action === 'add') ? 'Save ' : 'Update class'; ?>
                 </button>
             </div>
         </form>

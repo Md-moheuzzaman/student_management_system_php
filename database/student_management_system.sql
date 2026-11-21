@@ -170,6 +170,17 @@ CREATE TABLE `students` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `student_classes`
+--
+
+CREATE TABLE `student_classes` (
+  `student_id` int UNSIGNED NOT NULL,
+  `class_id` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Dumping data for table `students`
 --
@@ -181,6 +192,18 @@ INSERT INTO `students` (`id`, `user_id`, `name`, `email`, `phone`, `dob`, `class
 (4, 9, 'Rashed', 'rashed@gmail.com', '0110328473', '2026-11-02', 9, 'Shyamoli', '2026-11-19 15:39:15'),
 (5, 10, 'Noman', 'noman@gmail.com', '01928387288', '2026-11-10', 7, 'Cox-Bazar', '2026-11-19 16:07:56'),
 (6, 11, 'Touhid', 'touhid@gmail.com', '010292927377', '2026-11-01', 8, 'Dhanmondi', '2026-11-20 13:20:53');
+
+--
+-- Dumping data for table `student_classes`
+--
+
+INSERT INTO `student_classes` (`student_id`, `class_id`) VALUES
+(1, 7),
+(2, 7),
+(3, 3),
+(4, 9),
+(5, 7),
+(6, 8);
 
 -- --------------------------------------------------------
 
@@ -339,6 +362,13 @@ ALTER TABLE `students`
   ADD KEY `idx_students_class_id` (`class_id`);
 
 --
+-- Indexes for table `student_classes`
+--
+ALTER TABLE `student_classes`
+  ADD PRIMARY KEY (`student_id`, `class_id`),
+  ADD KEY `idx_student_classes_class_id` (`class_id`);
+
+--
 -- Indexes for table `subjects`
 --
 ALTER TABLE `subjects`
@@ -469,6 +499,13 @@ ALTER TABLE `marks`
 ALTER TABLE `students`
   ADD CONSTRAINT `fk_students_class` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_students_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `student_classes`
+--
+ALTER TABLE `student_classes`
+  ADD CONSTRAINT `fk_student_classes_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_student_classes_class` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `subjects`

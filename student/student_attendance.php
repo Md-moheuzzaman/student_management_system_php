@@ -34,10 +34,13 @@ function validDate($value) {
 }
 
 $student = rows($conn,
-    "SELECT s.id, s.name, c.class_name, c.section
+    "SELECT s.id, s.name,
+            GROUP_CONCAT(DISTINCT CONCAT(c.class_name, ' - ', c.section) ORDER BY c.class_name, c.section SEPARATOR ', ') AS class_names
        FROM students s
-       JOIN classes c ON c.id = s.class_id
-      WHERE s.user_id = ?",
+       LEFT JOIN student_classes sc ON sc.student_id = s.id
+       LEFT JOIN classes c ON c.id = sc.class_id
+      WHERE s.user_id = ?
+      GROUP BY s.id, s.name",
     "i", [(int)$_SESSION['id']])[0] ?? null;
 
 $subjects = $student ? rows($conn,
@@ -129,7 +132,7 @@ $attendanceRate = $attendance ? round(100 * ($present + $late) / count($attendan
       <div class="head">
         <div>
           <h1>My Attendance</h1>
-          <p><?php echo $student ? h($student['name'] . ' · ' . $student['class_name'] . ' - ' . $student['section']) : 'Your individual attendance records.'; ?></p>
+          <p><?php echo $student ? h($student['name'] . ' · ' . $student['class_names']) : 'Your individual attendance records.'; ?></p>
         </div>
       </div>
 

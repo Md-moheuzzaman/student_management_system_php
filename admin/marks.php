@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_marks'])) {
     if ($selectionValid) {
         // Only accept students who really are in the selected class
         $classStudents = array_map('intval', array_column(
-            rows($conn, "SELECT id FROM students WHERE class_id = ?", "i", [$classId]), 'id'));
+            rows($conn, "SELECT student_id AS id FROM student_classes WHERE class_id = ?", "i", [$classId]), 'id'));
 
         $find = $conn->prepare("SELECT id FROM marks WHERE student_id = ? AND subject_id = ? AND exam_type = ? ORDER BY id DESC LIMIT 1");
         $upd  = $conn->prepare("UPDATE marks SET marks = ?, exam_date = ? WHERE id = ?");
@@ -123,7 +123,10 @@ if ($selectionValid) {
                SELECT MAX(m2.id) FROM marks m2
                 WHERE m2.student_id = s.id AND m2.subject_id = ? AND m2.exam_type = ?
            )
-          WHERE s.class_id = ?
+          WHERE EXISTS (
+              SELECT 1 FROM student_classes sc
+               WHERE sc.student_id = s.id AND sc.class_id = ?
+          )
           ORDER BY s.name",
         "isi", [$markSubjectId, $examType, $classId]);
 }

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_attendance']) &&
     $classId   = (int)$current['class_id'];
     $subjectId = (int)$current['subject_id'];
     $classStudents = array_map('intval', array_column(
-        rows($conn, "SELECT id FROM students WHERE class_id = ?", "i", [$classId]), 'id'));
+        rows($conn, "SELECT student_id AS id FROM student_classes WHERE class_id = ?", "i", [$classId]), 'id'));
 
     $find = $conn->prepare("SELECT id FROM attendance WHERE student_id = ? AND subject_id = ? AND date = ?");
     $upd  = $conn->prepare("UPDATE attendance SET status = ? WHERE id = ?");
@@ -86,7 +86,10 @@ if ($current) {
         "SELECT s.id, s.name, s.email, a.status
            FROM students s
            LEFT JOIN attendance a ON a.student_id = s.id AND a.subject_id = ? AND a.date = ?
-          WHERE s.class_id = ?
+          WHERE EXISTS (
+              SELECT 1 FROM student_classes sc
+               WHERE sc.student_id = s.id AND sc.class_id = ?
+          )
           ORDER BY s.name",
         "isi", [(int)$current['subject_id'], $date, (int)$current['class_id']]);
     foreach ($students as $s) if ($s['status'] !== null) $already = true;

@@ -52,9 +52,10 @@ $students = $currentClass ? rows($conn,
     "SELECT s.id, s.name, s.email, s.phone,
             GROUP_CONCAT(DISTINCT sub.subject_name ORDER BY sub.subject_name SEPARATOR ', ') AS subjects
        FROM students s
-       JOIN teacher_subjects ts ON ts.class_id = s.class_id AND ts.teacher_id = ?
+       JOIN student_classes sc ON sc.student_id = s.id
+       JOIN teacher_subjects ts ON ts.class_id = sc.class_id AND ts.teacher_id = ?
        JOIN subjects sub ON sub.id = ts.subject_id
-      WHERE s.class_id = ?
+      WHERE sc.class_id = ?
       GROUP BY s.id, s.name, s.email, s.phone
       ORDER BY s.name",
     "ii", [(int)$teacher['id'], $classId]) : [];

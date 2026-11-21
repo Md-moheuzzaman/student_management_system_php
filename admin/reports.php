@@ -27,21 +27,34 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) $from = date('Y-m-01');
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $to))   $to   = date('Y-m-d');
 
 /* ---------- CSV export (one line per student) ---------- */
-// "(? = 0 OR s.class_id = ?)" means: no class chosen -> every class
+// A class filter matches any course/class the student is enrolled in.
 $studentSql =
     "SELECT s.name, CONCAT(c.class_name, ' - ', c.section) AS class_name,
-            (SELECT ROUND(100 * SUM(a.status IN ('P','L')) / COUNT(*), 1) FROM attendance a
-              WHERE a.student_id = s.id AND a.date BETWEEN ? AND ?) AS att_pct,
-            (SELECT ROUND(AVG(m.marks), 1) FROM marks m
-              WHERE m.student_id = s.id AND m.exam_date BETWEEN ? AND ?) AS avg_marks,
+            (SELECT ROUND(100 * SUM(a.status IN ('P','L')) / COUNT(*), 1)
+               FROM attendance a
+               JOIN subjects sub ON sub.id = a.subject_id
+               JOIN student_classes sc ON sc.student_id = s.id
+               JOIN classes ec ON ec.id = sc.class_id AND ec.course_id = sub.course_id
+              WHERE a.student_id = s.id AND a.date BETWEEN ? AND ?
+                AND (? = 0 OR sc.class_id = ?)) AS att_pct,
+            (SELECT ROUND(AVG(m.marks), 1)
+               FROM marks m
+               JOIN subjects sub ON sub.id = m.subject_id
+               JOIN student_classes sc ON sc.student_id = s.id
+               JOIN classes ec ON ec.id = sc.class_id AND ec.course_id = sub.course_id
+              WHERE m.student_id = s.id AND m.exam_date BETWEEN ? AND ?
+                AND (? = 0 OR sc.class_id = ?)) AS avg_marks,
             (SELECT COALESCE(SUM(f.amount), 0) FROM fees f
               WHERE f.student_id = s.id AND f.status IN ('Paid','Partial')) AS fees_paid
        FROM students s JOIN classes c ON c.id = s.class_id
-      WHERE (? = 0 OR s.class_id = ?)
+      WHERE (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           WHERE sc.student_id = s.id AND sc.class_id = ?
+      ))
       ORDER BY c.class_name, c.section, s.name";
 
 if (isset($_GET['export'])) {
-    $list = rows($conn, $studentSql, "ssssii", [$from, $to, $from, $to, $classId, $classId]);
+    $list = rows($conn, $studentSql, "ssiissiiii", [$from, $to, $classId, $classId, $from, $to, $classId, $classId, $classId, $classId]);
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="student_report_' . $from . '_to_' . $to . '.csv"');
     $out = fopen('php://output', 'w');
@@ -55,7 +68,11 @@ if (isset($_GET['export'])) {
 $classes = rows($conn, "SELECT id, class_name, section FROM classes ORDER BY class_name, section");
 
 $totalStudents = (int)(rows($conn,
-    "SELECT COUNT(*) AS n FROM students s WHERE (? = 0 OR s.class_id = ?)", "ii", [$classId, $classId])[0]['n'] ?? 0);
+    "SELECT COUNT(*) AS n FROM students s
+      WHERE (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           WHERE sc.student_id = s.id AND sc.class_id = ?
+      ))", "ii", [$classId, $classId])[0]['n'] ?? 0);
 
 // attendance: Present and Late both count as "attended"
 $attByClass = rows($conn,
@@ -63,8 +80,10 @@ $attByClass = rows($conn,
             SUM(a.status = 'P') AS p, SUM(a.status = 'A') AS a, SUM(a.status = 'L') AS l
        FROM attendance a
        JOIN students s ON s.id = a.student_id
-       JOIN classes c ON c.id = s.class_id
-      WHERE a.date BETWEEN ? AND ? AND (? = 0 OR s.class_id = ?)
+       JOIN student_classes sc ON sc.student_id = s.id
+       JOIN classes c ON c.id = sc.class_id
+       JOIN subjects sub ON sub.id = a.subject_id AND sub.course_id = c.course_id
+      WHERE a.date BETWEEN ? AND ? AND (? = 0 OR sc.class_id = ?)
       GROUP BY c.id ORDER BY c.class_name, c.section",
     "ssii", [$from, $to, $classId, $classId]);
 $attTotal = 0; $attOk = 0;
@@ -76,19 +95,36 @@ $marksBySubject = rows($conn,
        FROM marks m
        JOIN subjects sub ON sub.id = m.subject_id
        JOIN students s ON s.id = m.student_id
-      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR s.class_id = ?)
+      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           JOIN classes c ON c.id = sc.class_id
+           WHERE sc.student_id = s.id AND sc.class_id = ? AND c.course_id = sub.course_id
+      ))
       GROUP BY sub.id ORDER BY sub.subject_name",
     "ssii", [$from, $to, $classId, $classId]);
 
 $avgMarks = (float)(rows($conn,
-    "SELECT ROUND(AVG(m.marks), 1) AS a FROM marks m JOIN students s ON s.id = m.student_id
-      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR s.class_id = ?)",
+    "SELECT ROUND(AVG(m.marks), 1) AS a
+       FROM marks m
+       JOIN subjects sub ON sub.id = m.subject_id
+       JOIN students s ON s.id = m.student_id
+      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           JOIN classes c ON c.id = sc.class_id
+           WHERE sc.student_id = s.id AND sc.class_id = ? AND c.course_id = sub.course_id
+      ))",
     "ssii", [$from, $to, $classId, $classId])[0]['a'] ?? 0);
 
 $topStudents = rows($conn,
     "SELECT s.name, ROUND(AVG(m.marks), 1) AS avg_m
-       FROM marks m JOIN students s ON s.id = m.student_id
-      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR s.class_id = ?)
+       FROM marks m
+       JOIN subjects sub ON sub.id = m.subject_id
+       JOIN students s ON s.id = m.student_id
+      WHERE m.exam_date BETWEEN ? AND ? AND (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           JOIN classes c ON c.id = sc.class_id
+           WHERE sc.student_id = s.id AND sc.class_id = ? AND c.course_id = sub.course_id
+      ))
       GROUP BY s.id ORDER BY avg_m DESC, s.name LIMIT 5",
     "ssii", [$from, $to, $classId, $classId]);
 
@@ -96,7 +132,10 @@ $topStudents = rows($conn,
 $feeRows = rows($conn,
     "SELECT f.status, COUNT(*) AS n, COALESCE(SUM(f.amount), 0) AS total
        FROM fees f JOIN students s ON s.id = f.student_id
-      WHERE COALESCE(f.payment_date, DATE(f.created_at)) BETWEEN ? AND ? AND (? = 0 OR s.class_id = ?)
+      WHERE COALESCE(f.payment_date, DATE(f.created_at)) BETWEEN ? AND ? AND (? = 0 OR EXISTS (
+          SELECT 1 FROM student_classes sc
+           WHERE sc.student_id = s.id AND sc.class_id = ?
+      ))
       GROUP BY f.status",
     "ssii", [$from, $to, $classId, $classId]);
 $fee = ['Paid' => ['n' => 0, 'total' => 0], 'Partial' => ['n' => 0, 'total' => 0], 'Unpaid' => ['n' => 0, 'total' => 0]];

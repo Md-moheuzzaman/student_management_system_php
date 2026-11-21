@@ -32,9 +32,13 @@ function gradeOf($m) {
    $_SESSION['id'] is the USERS id. The students table has its own id, linked by students.user_id.
    Using the session id (not an id from the URL) means a student can only ever see their own marks. */
 $me = rows($conn,
-    "SELECT s.id, s.name, c.class_name, c.section
-       FROM students s JOIN classes c ON c.id = s.class_id
-      WHERE s.user_id = ?", "i", [(int)$_SESSION['id']])[0] ?? null;
+    "SELECT s.id, s.name,
+            GROUP_CONCAT(DISTINCT CONCAT(c.class_name, ' - ', c.section) ORDER BY c.class_name, c.section SEPARATOR ', ') AS class_names
+       FROM students s
+       LEFT JOIN student_classes sc ON sc.student_id = s.id
+       LEFT JOIN classes c ON c.id = sc.class_id
+      WHERE s.user_id = ?
+      GROUP BY s.id, s.name", "i", [(int)$_SESSION['id']])[0] ?? null;
 
 $examTypes = ['Quiz', 'Assignment', 'Midterm', 'Final'];
 $examType = $_GET['exam_type'] ?? '';
@@ -95,7 +99,7 @@ $attPct = $att['total'] ? round(100 * $att['ok'] / $att['total']) : 0;
       <div class="head">
         <div>
           <h1>My Marks</h1>
-          <p><?php echo $me ? h($me['name'] . ' · ' . $me['class_name'] . ' - ' . $me['section']) : 'Your results appear here.'; ?></p>
+          <p><?php echo $me ? h($me['name'] . ' · ' . $me['class_names']) : 'Your results appear here.'; ?></p>
         </div>
       </div>
 

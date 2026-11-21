@@ -28,22 +28,26 @@ function rows($conn, $sql, $types = '', $params = []) {
 }
 
 $student = rows($conn,
-    "SELECT s.id, s.name, c.id AS class_id, c.class_name, c.section, co.course_name
+    "SELECT s.id, s.name,
+            GROUP_CONCAT(DISTINCT CONCAT(c.class_name, ' - ', c.section) ORDER BY c.class_name, c.section SEPARATOR ', ') AS class_names,
+            GROUP_CONCAT(DISTINCT co.course_name ORDER BY co.course_name SEPARATOR ', ') AS course_names
        FROM students s
-       JOIN classes c ON c.id = s.class_id
+       LEFT JOIN student_classes sc ON sc.student_id = s.id
+       LEFT JOIN classes c ON c.id = sc.class_id
        JOIN courses co ON co.id = c.course_id
-      WHERE s.user_id = ?",
+      WHERE s.user_id = ?
+      GROUP BY s.id, s.name",
     "i", [(int)$_SESSION['id']])[0] ?? null;
 
 $subjects = $student ? rows($conn,
     "SELECT DISTINCT sub.id, sub.subject_name, GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ', ') AS teachers
        FROM teacher_subjects ts
+       JOIN student_classes sc ON sc.class_id = ts.class_id AND sc.student_id = ?
        JOIN subjects sub ON sub.id = ts.subject_id
        LEFT JOIN teachers t ON t.id = ts.teacher_id
-      WHERE ts.class_id = ?
       GROUP BY sub.id, sub.subject_name
       ORDER BY sub.subject_name",
-    "i", [(int)$student['class_id']]) : [];
+    "i", [(int)$student['id']]) : [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +71,7 @@ $subjects = $student ? rows($conn,
       <div class="head">
         <div>
           <h1>My Courses</h1>
-          <p><?php echo $student ? h($student['name'] . ' · ' . $student['class_name'] . ' - ' . $student['section']) : 'Your enrolled courses and subjects.'; ?></p>
+          <p><?php echo $student ? h($student['name'] . ' · ' . $student['class_names']) : 'Your enrolled courses and subjects.'; ?></p>
         </div>
       </div>
 
@@ -75,13 +79,13 @@ $subjects = $student ? rows($conn,
         <div class="alert alert-warning">Your student profile has not been created yet. Please ask the admin to add you in the Students page.</div>
       <?php else: ?>
         <section class="stats" aria-label="Summary">
-          <div class="stat"><span class="ico b"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span><div><b><?php echo h($student['class_name'] . ' - ' . $student['section']); ?></b><span>My class</span></div></div>
+          <div class="stat"><span class="ico b"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span><div><b><?php echo h($student['class_names']); ?></b><span>My department</span></div></div>
           <div class="stat"><span class="ico g"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/></svg></span><div><b><?php echo count($subjects); ?></b><span>Subjects</span></div></div>
-          <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M3 5h18M3 12h18M3 19h18"/></svg></span><div><b><?php echo h($student['course_name']); ?></b><span>Class course</span></div></div>
+          <div class="stat"><span class="ico y"><svg viewBox="0 0 24 24"><path d="M3 5h18M3 12h18M3 19h18"/></svg></span><div><b><?php echo h($student['course_names']); ?></b><span>My courses</span></div></div>
         </section>
 
         <section class="card">
-          <h2>Subjects in <?php echo h($student['class_name'] . ' - ' . $student['section']); ?></h2>
+          <h2>Subjects in <?php echo h($student['class_names']); ?></h2>
           <div class="table-wrap">
             <table>
               <thead><tr><th>#</th><th>Subject</th><th>Teacher</th></tr></thead>
