@@ -1,6 +1,7 @@
 # Local settings and secrets
 .env
 dbconfig.php
+database/bkash_config.php
 
 
 # Logs and uploaded files
