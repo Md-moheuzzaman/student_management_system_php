@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 20, 2026 at 09:17 PM
+-- Generation Time: Nov 22, 2026 at 05:43 AM
 -- Server version: 8.4.3
--- PHP Version: 8.3.30
+-- PHP Version: 8.3.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,7 +47,10 @@ INSERT INTO `attendance` (`id`, `student_id`, `subject_id`, `date`, `status`, `c
 (4, 3, 4, '2026-11-20', 'P', '2026-11-20 12:44:50'),
 (5, 2, 4, '2026-11-20', 'P', '2026-11-20 12:44:50'),
 (6, 4, 4, '2026-11-20', 'A', '2026-11-20 12:44:50'),
-(7, 6, 7, '2026-11-20', 'P', '2026-11-20 13:21:45');
+(7, 6, 7, '2026-11-20', 'P', '2026-11-20 13:21:45'),
+(8, 1, 4, '2026-11-22', 'A', '2026-11-22 05:21:43'),
+(9, 5, 4, '2026-11-22', 'P', '2026-11-22 05:21:43'),
+(10, 2, 4, '2026-11-22', 'A', '2026-11-22 05:21:43');
 
 -- --------------------------------------------------------
 
@@ -71,7 +74,9 @@ INSERT INTO `classes` (`id`, `class_name`, `section`, `course_id`, `created_at`)
 (3, 'CSE-49', 'A', 13, '2026-11-18 12:30:57'),
 (7, 'Civil-44', 'A', 16, '2026-11-19 16:09:18'),
 (8, 'CSE-50', 'A', 17, '2026-11-20 13:18:55'),
-(9, 'ENG-52', 'A', 1, '2026-11-20 20:43:34');
+(9, 'ENG-52', 'A', 1, '2026-11-20 20:43:34'),
+(10, 'CSE-49', 'A', 18, '2026-11-22 03:32:09'),
+(11, 'CSE-49', 'A', 19, '2026-11-22 03:32:18');
 
 -- --------------------------------------------------------
 
@@ -93,7 +98,9 @@ INSERT INTO `courses` (`id`, `course_name`, `description`) VALUES
 (1, 'ENG101', 'English Language I'),
 (13, 'PHY101', 'Physics I'),
 (16, 'WSE101', 'Water Supply Engineering'),
-(17, 'MATH101', 'Mathematics I');
+(17, 'MATH101', 'Mathematics I'),
+(18, 'CSE101', 'Computer Fundamental'),
+(19, 'CSE102', 'Data Structure');
 
 -- --------------------------------------------------------
 
@@ -116,8 +123,10 @@ CREATE TABLE `fees` (
 --
 
 INSERT INTO `fees` (`id`, `student_id`, `amount`, `payment_date`, `status`, `receipt_no`, `created_at`) VALUES
-(1, 1, 1500.00, '2026-11-18', 'Paid', 'R-00001', '2026-11-18 12:27:54'),
-(2, 2, 5000.00, '2026-11-18', 'Paid', 'R-00002', '2026-11-18 12:36:53');
+(2, 2, 5000.00, '2026-11-18', 'Paid', 'R-00002', '2026-11-18 12:36:53'),
+(3, 8, 10000.00, '2026-11-22', 'Paid', 'R-00003', '2026-11-22 03:35:06'),
+(4, 1, 10000.00, '2026-11-22', 'Paid', 'R-00004', '2026-11-22 05:07:22'),
+(5, 8, 10000.00, '2026-11-22', 'Paid', 'R-00005', '2026-11-22 05:20:05');
 
 -- --------------------------------------------------------
 
@@ -144,13 +153,15 @@ INSERT INTO `marks` (`id`, `student_id`, `subject_id`, `exam_type`, `marks`, `ex
 (2, 1, 1, 'Final', 82.00, '2026-11-17', '2026-11-18 12:30:01'),
 (6, 4, 3, 'Midterm', 60.00, '2026-11-19', '2026-11-19 16:06:10'),
 (7, 5, 4, 'Midterm', 80.00, '2026-11-20', '2026-11-19 16:11:25'),
-(8, 5, 4, 'Final', 60.00, '2026-11-25', '2026-11-19 16:12:46'),
+(8, 5, 4, 'Final', 60.00, '2026-11-22', '2026-11-19 16:12:46'),
 (9, 1, 4, 'Midterm', 66.00, '2026-11-20', '2026-11-20 12:28:51'),
 (10, 2, 4, 'Midterm', 78.00, '2026-11-20', '2026-11-20 12:28:51'),
 (11, 3, 4, 'Midterm', 67.00, '2026-11-20', '2026-11-20 12:28:51'),
 (12, 4, 4, 'Midterm', 88.00, '2026-11-20', '2026-11-20 12:28:51'),
 (13, 6, 7, 'Midterm', 28.00, '2026-11-20', '2026-11-20 13:21:57'),
-(14, 6, 7, 'Final', 85.00, '2026-11-20', '2026-11-20 13:24:52');
+(14, 6, 7, 'Final', 85.00, '2026-11-20', '2026-11-20 13:24:52'),
+(15, 1, 4, 'Final', 70.00, '2026-11-22', '2026-11-22 05:21:56'),
+(16, 2, 4, 'Final', 66.00, '2026-11-22', '2026-11-22 05:21:56');
 
 -- --------------------------------------------------------
 
@@ -170,6 +181,19 @@ CREATE TABLE `students` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`id`, `user_id`, `name`, `email`, `phone`, `dob`, `class_id`, `address`, `created_at`) VALUES
+(1, 4, 'Karim', 'karim@gmail.com', '017000121212', '2026-10-14', 7, 'Mirpur', '2026-11-18 12:27:54'),
+(2, 5, 'Rakib', 'rakib@gmail.com', '011020202020', '2026-11-17', 7, 'Dhanmondi', '2026-11-18 12:32:32'),
+(3, 8, 'Rahim', 'rahim@gmail.com', '012217378263', '2026-07-15', 3, 'Dhaka', '2026-11-19 15:35:29'),
+(4, 9, 'Rashed', 'rashed@gmail.com', '0110328473', '2026-11-02', 9, 'Shyamoli', '2026-11-19 15:39:15'),
+(5, 10, 'Noman', 'noman@gmail.com', '01928387288', '2026-11-10', 7, 'Cox-Bazar', '2026-11-19 16:07:56'),
+(6, 11, 'Touhid', 'touhid@gmail.com', '010292927377', '2026-11-01', 8, 'Dhanmondi', '2026-11-20 13:20:53'),
+(8, 14, 'Arafat', 'arafat@gmail.com', '011783467777', '2026-07-29', 3, 'Dhaka', '2026-11-22 03:33:08');
+
 -- --------------------------------------------------------
 
 --
@@ -182,28 +206,19 @@ CREATE TABLE `student_classes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `students`
---
-
-INSERT INTO `students` (`id`, `user_id`, `name`, `email`, `phone`, `dob`, `class_id`, `address`, `created_at`) VALUES
-(1, 4, 'Karim', 'karim@gmail.com', '017000121212', '2026-10-14', 7, 'Mirpur', '2026-11-18 12:27:54'),
-(2, 5, 'Rakib', 'rakib@gmail.com', '011020202020', '2026-11-17', 7, 'Dhanmondi', '2026-11-18 12:32:32'),
-(3, 8, 'Rahim', 'rahim@gmail.com', '012217378263', '2026-07-15', 3, 'Dhaka', '2026-11-19 15:35:29'),
-(4, 9, 'Rashed', 'rashed@gmail.com', '0110328473', '2026-11-02', 9, 'Shyamoli', '2026-11-19 15:39:15'),
-(5, 10, 'Noman', 'noman@gmail.com', '01928387288', '2026-11-10', 7, 'Cox-Bazar', '2026-11-19 16:07:56'),
-(6, 11, 'Touhid', 'touhid@gmail.com', '010292927377', '2026-11-01', 8, 'Dhanmondi', '2026-11-20 13:20:53');
-
---
 -- Dumping data for table `student_classes`
 --
 
 INSERT INTO `student_classes` (`student_id`, `class_id`) VALUES
+(3, 3),
+(8, 3),
 (1, 7),
 (2, 7),
-(3, 3),
-(4, 9),
 (5, 7),
-(6, 8);
+(6, 8),
+(4, 9),
+(8, 10),
+(8, 11);
 
 -- --------------------------------------------------------
 
@@ -226,7 +241,9 @@ INSERT INTO `subjects` (`id`, `subject_name`, `course_id`, `created_at`) VALUES
 (1, 'English Language I', 1, '2026-11-18 12:27:54'),
 (3, 'Physics I', 13, '2026-11-19 16:06:10'),
 (4, 'Water Supply Engineering', 16, '2026-11-19 16:11:25'),
-(7, 'Mathematics I', 17, '2026-11-20 13:18:00');
+(7, 'Mathematics I', 17, '2026-11-20 13:18:00'),
+(8, 'Computer Fundamental', 18, '2026-11-22 03:31:23'),
+(9, 'Data Structure', 19, '2026-11-22 03:31:42');
 
 -- --------------------------------------------------------
 
@@ -252,7 +269,9 @@ INSERT INTO `teachers` (`id`, `user_id`, `name`, `email`, `phone`, `qualificatio
 (1, 3, 'Teacher1', 'teacher1@gmail.com', '0170343545645', 'B.Sc in Civil', '2026-11-18 12:27:54'),
 (2, 6, 'Teacher2', 'teacher2@gmail.com', '01929292929299', 'B.Sc in EEE', '2026-11-18 12:34:56'),
 (3, 7, 'Teacher3', 'teacher3@gmail.com', '02892738723', 'B.Sc in Mathematics', '2026-11-18 12:50:03'),
-(4, 12, 'Teacher4', 'teacher4@gmail.com', '010873766333333', 'M.A in English', '2026-11-20 20:45:58');
+(4, 12, 'Teacher4', 'teacher4@gmail.com', '010873766333333', 'M.A in English', '2026-11-20 20:45:58'),
+(5, 15, 'Teacher5', 'teacher5@gmail.com', '0112083927', 'B.Sc in CSE', '2026-11-22 03:38:33'),
+(6, 16, 'Teacher6', 'teacher6@gmail.com', '0123474334333', 'B.Sc in CSE', '2026-11-22 03:39:34');
 
 -- --------------------------------------------------------
 
@@ -276,7 +295,9 @@ INSERT INTO `teacher_subjects` (`id`, `teacher_id`, `subject_id`, `class_id`, `c
 (3, 2, 3, 3, '2026-11-20 12:42:14'),
 (6, 3, 7, 8, '2026-11-20 13:19:08'),
 (7, 1, 4, 7, '2026-11-20 20:44:39'),
-(8, 4, 1, 9, '2026-11-20 20:45:58');
+(8, 4, 1, 9, '2026-11-20 20:45:58'),
+(9, 5, 8, 10, '2026-11-22 03:38:33'),
+(10, 6, 9, 11, '2026-11-22 03:39:34');
 
 -- --------------------------------------------------------
 
@@ -308,7 +329,10 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `email`, `created_at`
 (9, 'rashed', '5c683af0a96180bd58bcdc2d5b6263d4089c03d4', 'student', 'rashed@gmail.com', '2026-11-19 15:39:15'),
 (10, 'noman', 'fa47d8e02ad16e728a1fd36733ecc915987ce8ac', 'student', 'noman@gmail.com', '2026-11-19 16:07:56'),
 (11, 'Islam', 'cc4ed6830efc118d6b97e74bbc639637c411eafb', 'student', 'touhid@gmail.com', '2026-11-20 13:20:53'),
-(12, 'teacher4', 'feef6b9e56603dd6cc27b841e73bd1d3bbeca8f6', 'teacher', 'teacher4@gmail.com', '2026-11-20 20:45:58');
+(12, 'teacher4', 'feef6b9e56603dd6cc27b841e73bd1d3bbeca8f6', 'teacher', 'teacher4@gmail.com', '2026-11-20 20:45:58'),
+(14, 'Arafat', 'f1bbed798136745bfd28ad72d8118801ee33642a', 'student', 'arafat@gmail.com', '2026-11-22 03:29:37'),
+(15, 'teacher5', '12622d8e8fcffb8b8342d485395d08d411ece138', 'teacher', 'teacher5@gmail.com', '2026-11-22 03:38:33'),
+(16, 'teacher6', 'a979f3ae26f503e1a78ab2682f495dfbc68d96f4', 'teacher', 'teacher6@gmail.com', '2026-11-22 03:39:34');
 
 --
 -- Indexes for dumped tables
@@ -365,7 +389,7 @@ ALTER TABLE `students`
 -- Indexes for table `student_classes`
 --
 ALTER TABLE `student_classes`
-  ADD PRIMARY KEY (`student_id`, `class_id`),
+  ADD PRIMARY KEY (`student_id`,`class_id`),
   ADD KEY `idx_student_classes_class_id` (`class_id`);
 
 --
@@ -407,61 +431,61 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `fees`
 --
 ALTER TABLE `fees`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `marks`
 --
 ALTER TABLE `marks`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `teacher_subjects`
 --
 ALTER TABLE `teacher_subjects`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
@@ -504,8 +528,8 @@ ALTER TABLE `students`
 -- Constraints for table `student_classes`
 --
 ALTER TABLE `student_classes`
-  ADD CONSTRAINT `fk_student_classes_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_student_classes_class` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_student_classes_class` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_student_classes_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `subjects`
