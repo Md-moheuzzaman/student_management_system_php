@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f7f9fc">
     <meta name="description" content="Learn about Ustudent, a clean and modern student management platform built for organised academic administration.">
-    <title>About — Ustudent Student Management System</title>
+    <title>Ustudent — Student Management System</title>
 
     <!-- Bootstrap CSS only: no JavaScript is required for this page. -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
